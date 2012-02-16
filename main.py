@@ -20,8 +20,8 @@ if sys.version_info[0] != 3:
     print("This program requires Python 3.")
     exit(1)
 
-if len(sys.argv) < 3:
-    print("Usage: python {} <locations file> <connections file>".format(sys.argv[0]))
+if len(sys.argv) < 5:
+    print("Usage: python {} <locations> <connections> <origin> <destination> [<avoid>]".format(sys.argv[0]))
     exit(1)
 
 try:
@@ -38,11 +38,29 @@ except IOError:
 
 locations = parse_connections_file(connectionsfile, parse_locations_file(locationsfile))
 
-# test
+try:
+    startcity = [x for x in locations if x.name == sys.argv[3]][0]
+except IndexError:
+    print("Could not find origin city:", sys.argv[3])
+    exit(1)
 
-startcity = [x for x in locations if x.name == "A1"][0]
-destcity = [x for x in locations if x.name == "G5"][0]
-avoidcity = [x for x in locations if x.name == "B2"][0]
+try:
+    destcity = [x for x in locations if x.name == sys.argv[4]][0]
+except IndexError:
+    print("Could not find destination city:", sys.argv[4])
+    exit(1)
+
+if len(sys.argv) >= 6:
+    try:
+        avoidcity = [x for x in locations if x.name == sys.argv[5]][0]
+    except IndexError:
+        print("Could not find city to avoid:", sys.argv[5])
+        exit(1)
+else:
+    avoidcity = None
+
+
+
 
 print(Search.astar(startcity, destcity, make_heuristic(destcity, avoidcity)))
 
