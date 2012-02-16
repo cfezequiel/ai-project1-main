@@ -31,7 +31,7 @@ def parse_locations_file(locationsfile):
 
         try:
             newlocation = City.City(tokens[0], int(tokens[1]), int(tokens[2]))
-        except ex as ValueError:
+        except ValueError:
             print("Invalid input line (invalid integer):", line)
             continue
 
@@ -54,14 +54,14 @@ def parse_connections_file(connectionsfile, locations):
 
         try:
             currentlocation = [x for x in locations if x.name == tokens[0]][0]
-        except ex as IndexError:
+        except IndexError:
             print("Invalid connection (could not find source city):", line)
             continue
 
         for neighborname in tokens[2:]:
             try:
                 neighbor = [x for x in locations if x.name == neighborname][0]
-            except ex as IndexError:
+            except IndexError:
                 print("Invalid connection (could not find destination " + neighborname + ")", line)
                 continue
 
