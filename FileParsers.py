@@ -7,6 +7,7 @@
 # Copyright (c) 2012 Benjamin Geiger <begeiger@mail.usf.edu>
 
 import City
+from math import sqrt
 
 def parse_locations_file(locationsfile):
 
@@ -65,7 +66,9 @@ def parse_connections_file(connectionsfile, locations):
                 print("Invalid connection (could not find destination " + neighborname + ")", line)
                 continue
 
-            currentlocation.neighbors.append(neighbor)
+            distance = sqrt((currentlocation.x - neighbor.x)**2 + (currentlocation.y - neighbor.y)**2)
+
+            currentlocation.neighbors.append((neighbor, distance))
 
     return locations
 
