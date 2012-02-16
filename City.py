@@ -25,7 +25,7 @@ class City (object):
         return sqrt((self.x - other.x)**2 + (self.y - other.y)**2)
 
     def __repr__(self):
-        return "City: " + self.name
+        return "City(" + self.name + ", " + str(self.x) + ", " + str(self.y) + ")"
 
 
 if __name__ == "__main__":
