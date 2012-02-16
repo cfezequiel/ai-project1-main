@@ -24,8 +24,8 @@ def astar(startnode, endnode, heuristic):
     closedset = []
 
     while len(openset) > 0:
-        print("Closed set:", closedset)
-        print("Open set:", openset)
+        #print("Closed set:", closedset)
+        #print("Open set:", openset)
 
         currentitem = min(openset, key=lambda x: x[2])
         currentnode, distance, estimate, parent = currentitem
@@ -34,9 +34,9 @@ def astar(startnode, endnode, heuristic):
             parents = [currentnode]
             while parent is not None:
                 parents.append(parent)
-                print("Backtracking through:", parent.name)
+                #print("Backtracking through:", parent.name)
                 potentialparents = [x[3] for x in closedset if x[0] == parent]
-                print("Potential parents:", potentialparents)
+                #print("Potential parents:", potentialparents)
                 parent = potentialparents[0]
 
             parents.reverse()
@@ -54,7 +54,7 @@ def astar(startnode, endnode, heuristic):
                 openset.append((neighbor, distance + neighbordistance, heuristic(neighbor), currentnode))
             else:
                 neighboritem = [x for x in openset if x[0] == neighbor][0]
-                print(neighboritem)
+                #print(neighboritem)
                 if neighbordistance + distance < neighboritem[1] + neighboritem[2]:
                     openset.remove(neighboritem)
                     openset.append((neighbor, neighbordistance + distance, heuristic(neighbor), currentnode))
