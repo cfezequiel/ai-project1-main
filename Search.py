@@ -20,17 +20,19 @@ def astar(startnode, endnode, heuristic):
     """
 
 
-    openset = [(startnode, 0, heuristic(startnode), None)]
+    openset = [(startnode, 0, heuristic(startnode), heuristic(startnode), None)]
     closedset = []
 
     while len(openset) > 0:
-        #print("Closed set:", closedset)
-        #print("Open set:", openset)
+        #print("\n\n\n")
+        #print("Closed set:\n", "\n".join([str(x) for x in closedset]))
+        #print("Open set:\n", "\n".join([str(x) for x in openset]))
 
-        # Grab the element of the open set that has the lowest heuristic value,
-        # and split it into its parts.
-        currentitem = min(openset, key=lambda x: x[2])
-        currentnode, distance, estimate, parent = currentitem
+        # Grab the element of the open set that has the lowest total estimated
+        # cost, and split it into its parts.
+        currentitem = min(openset, key=lambda x: x[3])
+        currentnode, distance, estimate, totaldistance, parent = currentitem
+        #print("Currently analyzing:", currentnode.name)
 
         # If we're done, rebuild the path and exit.
         if currentnode.name == endnode.name:
@@ -38,7 +40,7 @@ def astar(startnode, endnode, heuristic):
             while parent is not None:
                 parents.append(parent)
                 #print("Backtracking through:", parent.name)
-                potentialparents = [x[3] for x in closedset if x[0] == parent]
+                potentialparents = [x[4] for x in closedset if x[0] == parent]
                 #print("Potential parents:", potentialparents)
                 parent = potentialparents[0]
 
@@ -46,7 +48,8 @@ def astar(startnode, endnode, heuristic):
             return parents
 
         # Otherwise, we close this particular node.
-        openset.remove(currentitem)
+        #openset.remove(currentitem)
+        openset = [x for x in openset if x[0].name != currentnode.name]
         closedset.append(currentitem)
 
         # Get all neighbors of this node which are not already represented in
@@ -57,17 +60,25 @@ def astar(startnode, endnode, heuristic):
             neighbor, neighbordistance = n
 
             # If the neighbor isn't in the open set, add it.
-            if neighbor not in [x[0] for x in openset]:
-                openset.append((neighbor, distance + neighbordistance, heuristic(neighbor), currentnode))
+            if neighbor.name not in [x[0].name for x in openset]:
+                openset.append((neighbor,
+                                distance + neighbordistance,
+                                heuristic(neighbor),
+                                distance + neighbordistance + heuristic(neighbor),
+                                currentnode))
             else:
                 neighboritem = [x for x in openset if x[0] == neighbor][0]
                 #print(neighboritem)
 
                 # If this route to the neighbor is closer than the existing estimate,
                 # update the route costs to reflect this.
-                if neighbordistance + distance < neighboritem[1] + neighboritem[2]:
+                if neighbordistance + distance < neighboritem[1]:
                     openset.remove(neighboritem)
-                    openset.append((neighbor, neighbordistance + distance, heuristic(neighbor), currentnode))
+                    openset.append((neighbor,
+                                    neighbordistance + distance,
+                                    heuristic(neighbor),
+                                    neighbordistance + distance + heuristic(neighbor),
+                                    currentnode))
                 else:
                     # Otherwise, do nothing.
                     pass
