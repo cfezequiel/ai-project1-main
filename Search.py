@@ -56,7 +56,7 @@ def astar(startnode, endnode, heuristic, distance_func = None):
 
         # Get all neighbors of this node which are not already represented in
         # the closed set.
-        neighbors = [n for n in currentnode.neighbors if n not in [x[0] for x in closedset]]
+        neighbors = [n for n in currentnode.neighbors if n not in [x[0] for x in closedset] if heuristic(n) is not None]
 
         for neighbor in neighbors:
             neighbordistance = distance_func(currentnode, neighbor)

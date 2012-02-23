@@ -13,8 +13,14 @@ import Search
 
 from FileParsers import parse_locations_file, parse_connections_file
 
+def if_else(condition, truereturn, falsereturn):
+    if condition:
+        return truereturn
+    else:
+        return falsereturn
+
 def make_heuristic(dest, avoid):
-    return lambda x: ((x in avoid) and 1000000) or x.distance_to(dest)
+    return lambda x: if_else(x in avoid, None, x.distance_to(dest))
 
 if sys.version_info[0] != 3:
     print("This program requires Python 3.")
