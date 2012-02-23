@@ -14,7 +14,7 @@ import Search
 from FileParsers import parse_locations_file, parse_connections_file
 
 def make_heuristic(dest, avoid):
-    return lambda x: x == avoid and 1000000 or x.distance_to(dest)
+    return lambda x: ((x in avoid) and 1000000) or x.distance_to(dest)
 
 if sys.version_info[0] != 3:
     print("This program requires Python 3.")
@@ -50,20 +50,14 @@ except IndexError:
     print("Could not find destination city:", sys.argv[4])
     exit(1)
 
-if len(sys.argv) >= 6:
-    try:
-        avoidcity = [x for x in locations if x.name == sys.argv[5]][0]
-    except IndexError:
-        print("Could not find city to avoid:", sys.argv[5])
-        exit(1)
-else:
-    avoidcity = None
+avoidcities = [x for x in locations if x.name in sys.argv[5:]]
 
 
 
 
-print(Search.astar(startcity, destcity, make_heuristic(destcity, avoidcity)))
+path = Search.astar(startcity, destcity, make_heuristic(destcity, avoidcities))
 
+print("->".join([x.name for x in path]))
 
 
 # vim: set et sw=4 ts=4: 
