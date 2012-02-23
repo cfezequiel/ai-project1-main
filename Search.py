@@ -25,35 +25,28 @@ def astar(startnode, endnode, heuristic):
     """
 
 
+    # Create the open set, containing only the start node (and its associated data).
     openset = [(startnode, 0, heuristic(startnode), heuristic(startnode), None)]
     closedset = []
 
     while len(openset) > 0:
-        #print("\n\n\n")
-        #print("Closed set:\n", "\n".join([str(x) for x in closedset]))
-        #print("Open set:\n", "\n".join([str(x) for x in openset]))
-
         # Grab the element of the open set that has the lowest total estimated
         # cost, and split it into its parts.
         currentitem = min(openset, key=lambda x: x[3])
         currentnode, distance, estimate, totaldistance, parent = currentitem
-        #print("Currently analyzing:", currentnode.name)
 
         # If we're done, rebuild the path and exit.
         if currentnode.name == endnode.name:
             parents = [currentnode]
             while parent is not None:
                 parents.append(parent)
-                #print("Backtracking through:", parent.name)
                 potentialparents = [x[4] for x in closedset if x[0] == parent]
-                #print("Potential parents:", potentialparents)
                 parent = potentialparents[0]
 
             parents.reverse()
             return parents
 
         # Otherwise, we close this particular node.
-        #openset.remove(currentitem)
         openset = [x for x in openset if x[0].name != currentnode.name]
         closedset.append(currentitem)
 
@@ -73,7 +66,6 @@ def astar(startnode, endnode, heuristic):
                                 currentnode))
             else:
                 neighboritem = [x for x in openset if x[0] == neighbor][0]
-                #print(neighboritem)
 
                 # If this route to the neighbor is closer than the existing estimate,
                 # update the route costs to reflect this.
@@ -93,6 +85,7 @@ def astar(startnode, endnode, heuristic):
 
 
 
+# Test script.
 if __name__ == "__main__":
     import City
 
