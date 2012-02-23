@@ -12,10 +12,15 @@ def astar(startnode, endnode, heuristic):
     Perform an A* search on a graph.
 
     startnode and endnode are node-like objects, which have .name and
-    .neighbors attributes.
+    .neighbors attributes. .neighbors is a sequence of 2-tuples
+    (node, distance).
 
     heuristic is a function that accepts an object of the type of startnode
     and endnode and returns a value with a total ordering.
+
+    Code adapted from pseudocode found on:
+    http://en.wikipedia.org/wiki/A*_search_algorithm
+    (Retrieved 16 February 2012)
 
     """
 
