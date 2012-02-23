@@ -1,0 +1,19 @@
+AI Project 1
+============
+
+by Benjamin Geiger
+
+
+To Execute:
+-----------
+
+I have included two versions of this program: one works in Python 2.7, the
+other in Python 3. Both should work equally well; the Python 3 version was my
+original, with the Python 2 version as a backport.
+
+To execute the program, run at the command line:
+
+python main.py <locations.txt> <connections.txt> <start> <end> [<blocked> [<blocked> ...]]
+
+If there is no valid route from the start to the end without going through a blocked city,
+the program will throw an exception.
