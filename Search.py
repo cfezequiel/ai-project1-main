@@ -7,7 +7,7 @@
 # Copyright (c) 2012 Benjamin Geiger <begeiger@mail.usf.edu>
 
 
-def astar(startnode, endnode, heuristic):
+def astar(startnode, endnode, heuristic, distance_func = None):
     """
     Perform an A* search on a graph.
 
@@ -23,6 +23,10 @@ def astar(startnode, endnode, heuristic):
     (Retrieved 16 February 2012)
 
     """
+
+    # Functional magic.
+    if distance_func is None:
+        distance_func = lambda x, y: x.distance_to(y)
 
 
     # Create the open set, containing only the start node (and its associated data).
@@ -55,7 +59,7 @@ def astar(startnode, endnode, heuristic):
         neighbors = [n for n in currentnode.neighbors if n not in [x[0] for x in closedset]]
 
         for neighbor in neighbors:
-            neighbordistance = currentnode.distance_to(neighbor)
+            neighbordistance = distance_func(currentnode, neighbor)
 
             # If the neighbor isn't in the open set, add it.
             if neighbor.name not in [x[0].name for x in openset]:
