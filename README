@@ -11,6 +11,9 @@ I have included two versions of this program: one works in Python 2.7, the
 other in Python 3. Both should work equally well; the Python 3 version was my
 original, with the Python 2 version as a backport.
 
+PLEASE NOTE: If you run one version of the program with the other version of Python,
+Python will give syntax errors. Python 3 had many breaking changes in its syntax.
+
 To execute the program, run at the command line:
 
 python main.py <locations.txt> <connections.txt> <start> <end> [<blocked> [<blocked> ...]]
