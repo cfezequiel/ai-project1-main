@@ -54,8 +54,8 @@ def astar(startnode, endnode, heuristic):
         # the closed set.
         neighbors = [n for n in currentnode.neighbors if n not in [x[0] for x in closedset]]
 
-        for n in neighbors:
-            neighbor, neighbordistance = n
+        for neighbor in neighbors:
+            neighbordistance = currentnode.distance_to(neighbor)
 
             # If the neighbor isn't in the open set, add it.
             if neighbor.name not in [x[0].name for x in openset]:

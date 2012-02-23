@@ -87,10 +87,8 @@ def parse_connections_file(connectionsfile, locations):
                 print("Invalid connection (could not find destination " + neighborname + ")", line)
                 continue
 
-            distance = sqrt((currentlocation.x - neighbor.x)**2 + (currentlocation.y - neighbor.y)**2)
-
             # Add the connection between the cities.
-            currentlocation.neighbors.append((neighbor, distance))
+            currentlocation.neighbors.append(neighbor)
 
     return locations
 
