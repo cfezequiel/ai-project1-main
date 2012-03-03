@@ -9,19 +9,9 @@
 import sys
 
 from City import City
-import Search
 from AStarSearch import AStarSearch
 
 from FileParsers import parse_locations_file, parse_connections_file
-
-def if_else(condition, truereturn, falsereturn):
-    if condition:
-        return truereturn
-    else:
-        return falsereturn
-
-def make_heuristic(dest, avoid):
-    return lambda x: if_else(x in avoid, None, x.distance_to(dest))
 
 if sys.version_info[0] != 3:
     print("This program requires Python 3.")
@@ -63,9 +53,6 @@ avoidcities = [x for x in locations if x.name in sys.argv[5:]]
 
 search = AStarSearch(startcity, destcity, lambda x: x.distance_to(destcity), potholes=avoidcities)
 path = search.run_to_end()
-
-
-#path = Search.astar(startcity, destcity, make_heuristic(destcity, avoidcities))
 
 print("->".join([x.name for x in path]))
 
