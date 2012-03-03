@@ -21,7 +21,7 @@ class AStarSearch (object):
         self.ghetto = ghetto # TODO: find a non-racist name for this.
 
         self.heuristic = heuristic
-        self.distance_func = distance_func or lambda x, y: x.distance_to(y)
+        self.distance_func = distance_func or (lambda x, y: x.distance_to(y))
 
         self._frontier = [(origin, 0, heuristic(origin), None)]
         self._explored = []
@@ -37,7 +37,7 @@ class AStarSearch (object):
             current_node, distance, estimate = self.get_next_node()
             if current_node == None:
                 raise Exception # This really shouldn't happen.
-            if current_node == destination:
+            if current_node == self.destination:
                 return self.generate_path_from(current_node)
 
             for neighbor in self.get_neighbors(current_node):
@@ -48,10 +48,10 @@ class AStarSearch (object):
         raise Exception # No route from start to end.
 
     def get_next_node (self):
-        current_item = min(self.frontier, key=lambda x:x[1] + x[2])
+        current_item = min(self._frontier, key=lambda x:x[1] + x[2])
 
-        self.frontier.remove(current_item)
-        self.explored.append(current_item)
+        self._frontier.remove(current_item)
+        self._explored.append(current_item)
 
         return (current_item[0], current_item[1], current_item[2])
 
@@ -61,7 +61,7 @@ class AStarSearch (object):
         while parent is not None:
             path.append(parent)
             try:
-                parent = [x[3] for x in self.explored if x[0] == parent][0]
+                parent = [x[3] for x in self._explored if x[0] == parent][0]
             except ex as IndexError:
                 parent = None
         path.reverse()
@@ -72,23 +72,26 @@ class AStarSearch (object):
         """Get all neighbors that haven't yet been explored."""
 
         # Yes, it's a one-line method. It's just a really ugly line.
-        return [n for n in node.neighbors if n not in [x[0] for x in self.explored] if heuristic(n) is not None]
+        return [n for n in node.neighbors if n not in [x[0] for x in self._explored] if self.heuristic(n) is not None]
+
+    def frontier_size (self):
+        return len(self._frontier)
 
     def update_frontier (self, current_node, new_node, current_distance):
         n_distance = self.distance_func(current_node, new_node)
-        if neighbor not in [x[0] for x in self.frontier]:
-            self.frontier.append((neighbor,
+        if new_node not in [x[0] for x in self._frontier]:
+            self._frontier.append((new_node,
                     current_distance + n_distance,
-                    heuristic(new_node),
+                    self.heuristic(new_node),
                     current_node))
         else:
-            old_route = [x for x in self.frontier if x[0] == neighbor][0]
+            old_route = [x for x in self._frontier if x[0] == new_node][0]
 
             if current_distance + n_distance < old_route[1]:
-                self.frontier.remove(old_route)
-                self.frontier.append((neighbor,
+                self._frontier.remove(old_route)
+                self._frontier.append((new_node,
                         current_distance + n_distance,
-                        heuristic(new_node),
+                        self.heuristic(new_node),
                         current_node))
 
 if __name__ == "__main__":
