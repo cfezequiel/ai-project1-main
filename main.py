@@ -61,7 +61,7 @@ avoidcities = [x for x in locations if x.name in sys.argv[5:]]
 
 
 
-search = AStarSearch(startcity, destcity, lambda x: x.distance_to(destcity), ghetto=avoidcities)
+search = AStarSearch(startcity, destcity, lambda x: x.distance_to(destcity), potholes=avoidcities)
 path = search.run_to_end()
 
 

@@ -14,11 +14,18 @@ class AStarSearch (object):
     http://en.wikipedia.org/wiki/A*_search_algorithm
     (Retrieved 16 February 2012)"""
 
-    def __init__ (self, origin, destination, heuristic, distance_func = None, ghetto=[]):
+    def __init__ (self, origin, destination, heuristic, distance_func = None, potholes=[]):
+        """Initialize the search.
+
+        origin: Start of search.
+        destination: End of search.
+        heuristic: A* heuristic, used to estimate 'goodness' of route.
+        distance_func: How to determine the length of a link.
+        potholes: Places we can't visit."""
 
         self.origin = origin
         self.destination = destination
-        self.ghetto = ghetto # TODO: find a non-racist name for this.
+        self.potholes = potholes
 
         self.heuristic = heuristic
         self.distance_func = distance_func or (lambda x, y: x.distance_to(y))
