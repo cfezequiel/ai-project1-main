@@ -10,6 +10,7 @@ import sys
 
 from City import City
 import Search
+from AStarSearch import AStarSearch
 
 from FileParsers import parse_locations_file, parse_connections_file
 
@@ -60,8 +61,11 @@ avoidcities = [x for x in locations if x.name in sys.argv[5:]]
 
 
 
+search = AStarSearch(startcity, destcity, make_heuristic(destcity, avoidcities))
+path = search.run_to_end()
 
-path = Search.astar(startcity, destcity, make_heuristic(destcity, avoidcities))
+
+#path = Search.astar(startcity, destcity, make_heuristic(destcity, avoidcities))
 
 print("->".join([x.name for x in path]))
 
