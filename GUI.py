@@ -10,11 +10,30 @@ import tkinter as tk
 
 class GUI(object):
 
-    def __init__(self, root):
+    def __init__ (self, root):
 
+        self._initialize_menus(root)
         self._initialize_window(root)
 
-    def _initialize_window(self, root):
+    
+    def _initialize_menus (self, root):
+        menubar = tk.Menu(root)
+
+        filemenu = tk.Menu(menubar, tearoff=0)
+        filemenu.add_command(label="Open locations file...",
+                             command=self.do_open_locations)
+        filemenu.add_command(label="Open connections file...",
+                             command=self.do_open_connections)
+        filemenu.add_separator()
+        filemenu.add_command(label="Quit",
+                             command=self.do_quit)
+
+        menubar.add_cascade(label="File", menu=filemenu)
+
+        root.config(menu=menubar)
+
+
+    def _initialize_window (self, root):
 
         # Set minimum size, prevent vertical stretching.
         root.minsize(width=1000, height=800)
@@ -65,6 +84,10 @@ class GUI(object):
                       fill=tk.BOTH,
                       expand=1)
 
+
+
+    # Callbacks
+
     # What do we do when they click "previous"?
     def do_previous(self):
         pass
@@ -72,6 +95,16 @@ class GUI(object):
     # What do we do when they click "next"?
     def do_next(self):
         pass
+
+    def do_open_locations(self):
+        pass
+    
+    def do_open_connections(self):
+        pass
+
+    def do_quit(self):
+        root.quit()
+
 
 if __name__ == "__main__":
     root = tk.Tk()
