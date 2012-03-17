@@ -12,9 +12,15 @@ class GUI(object):
 
     def __init__(self, root):
 
+        self._initialize_window(root)
+
+    def _initialize_window(self, root):
+
         # Set minimum size, prevent vertical stretching.
         root.minsize(width=1000, height=800)
         root.resizable(width=True, height=False)
+
+
 
         # On the left, create a canvas.
         self.canvas = tk.Canvas(root,
