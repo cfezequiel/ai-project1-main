@@ -12,22 +12,53 @@ class GUI(object):
 
     def __init__(self, root):
         frame = tk.Frame(root)
-        frame.pack()
+        frame.pack(fill=tk.BOTH, expand=1)
 
-        self.canvas = tk.Canvas(frame, width=800, height=800)
-        self.canvas.pack(side=tk.LEFT)
+        self.canvas = tk.Canvas(frame,
+                                width=800, height=800,
+                                relief=tk.SUNKEN,
+                                borderwidth=1)
+        self.canvas.pack(side=tk.LEFT,
+                         fill=tk.NONE,
+                         expand=False)
 
-        buttonframe = tk.Frame(frame)
-        buttonframe.pack(side=tk.LEFT)
+        sideframe = tk.Frame(frame)
+        sideframe.pack(side=tk.RIGHT,
+                       fill=tk.BOTH,
+                       expand=1)
 
-        drawbutton = tk.Button(buttonframe, text="Draw", command=self.foo)
-        drawbutton.pack(side=tk.TOP)
+        buttonframe = tk.Frame(sideframe)
+        buttonframe.pack(side=tk.TOP)
+        
+        previmage = tk.PhotoImage(file="images/left_button.gif")
+        nextimage = tk.PhotoImage(file="images/right_button.gif")
 
-        quitbutton = tk.Button(buttonframe, text="Quit", command=frame.quit)
-        quitbutton.pack(side=tk.TOP)
+        prevbutton = tk.Button(buttonframe,
+                               image=previmage,
+                               command=self.do_previous)
+        prevbutton.image = previmage
+        prevbutton.pack(side=tk.LEFT)
+        
+        nextbutton = tk.Button(buttonframe,
+                               image=nextimage,
+                               command=self.do_next)
+        nextbutton.image = nextimage
+        nextbutton.pack(side=tk.RIGHT)
 
-    def foo(self):
-        print("NARF!")
+        self.log = tk.Listbox(sideframe)
+        self.log.pack(side=tk.BOTTOM,
+                      fill=tk.BOTH,
+                      expand=1)
+
+        #print(root.geometry())
+        #frame.minsize(width=frame.width(), height=frame.height())
+
+
+    def do_previous(self):
+        pass
+
+    def do_next(self):
+        pass
 
 if __name__ == "__main__":
     root = tk.Tk()
