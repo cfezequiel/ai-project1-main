@@ -14,7 +14,12 @@ class AStarSearch (object):
     http://en.wikipedia.org/wiki/A*_search_algorithm
     (Retrieved 16 February 2012)"""
 
-    def __init__ (self, origin, destination, heuristic, distance_func = None, potholes=[]):
+    def __init__ (self,
+            origin = None,
+            destination = None, 
+            heuristic = None,
+            distance_func = None,
+            potholes = None):
         """Initialize the search.
 
         origin: Start of search.
@@ -30,7 +35,8 @@ class AStarSearch (object):
         self.heuristic = heuristic
         self.distance_func = distance_func or (lambda x, y: x.distance_to(y))
 
-        self._frontier = [(origin, 0, heuristic(origin), None)]
+    def start_search (self):
+        self._frontier = [(self.origin, 0, self.heuristic(self.origin), None)]
         self._explored = []
 
     def run_to_end (self):
