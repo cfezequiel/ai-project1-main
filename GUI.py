@@ -7,6 +7,7 @@
 # Copyright (c) 2012 Benjamin Geiger <begeiger@mail.usf.edu>
 
 import tkinter as tk
+import tkinter.filedialog as tkfile
 
 class GUI(object):
 
@@ -18,26 +19,27 @@ class GUI(object):
 
     
     def _initialize_menus (self):
-        menubar = tk.Menu(self.root)
+        self.menubar = tk.Menu(self.root)
 
-        filemenu = tk.Menu(menubar, tearoff=0)
-        filemenu.add_command(label="Open locations file...",
+        self.filemenu = tk.Menu(self.menubar, tearoff=0)
+        self.filemenu.add_command(label="Open locations file...",
                              command=self.do_open_locations)
-        filemenu.add_command(label="Open connections file...",
-                             command=self.do_open_connections)
-        filemenu.add_separator()
-        filemenu.add_command(label="Quit",
+        self.filemenu.add_command(label="Open connections file...",
+                             command=self.do_open_connections,
+                             state=tk.DISABLED)
+        self.filemenu.add_separator()
+        self.filemenu.add_command(label="Quit",
                              command=self.do_quit)
 
-        menubar.add_cascade(label="File", menu=filemenu)
+        self.menubar.add_cascade(label="File", menu=self.filemenu)
 
-        searchmenu = tk.Menu(menubar, tearoff=0)
-        searchmenu.add_command(label="Reset search",
+        self.searchmenu = tk.Menu(self.menubar, tearoff=0)
+        self.searchmenu.add_command(label="Reset search",
                                command=self.do_reset_search)
 
-        menubar.add_cascade(label="Search", menu=searchmenu)
+        self.menubar.add_cascade(label="Search", menu=self.searchmenu)
 
-        self.root.config(menu=menubar)
+        self.root.config(menu=self.menubar)
 
 
     def _initialize_window (self):
@@ -124,10 +126,17 @@ class GUI(object):
         pass
 
     def do_open_locations(self):
-        pass
+        self.location_file_name = tkfile.askopenfilename()
+        self.connection_file_name = None
+        
+        self.filemenu.entryconfig(1, state=tk.NORMAL)
+
+        print(repr(self.menubar.component(0)))
     
     def do_open_connections(self):
-        pass
+        self.connection_file_name = tkfile.askopenfilename()
+
+        
 
     def do_reset_search(self):
         pass
