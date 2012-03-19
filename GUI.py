@@ -34,8 +34,9 @@ class GUI(object):
         self.menubar.add_cascade(label="File", menu=self.filemenu)
 
         self.searchmenu = tk.Menu(self.menubar, tearoff=0)
-        self.searchmenu.add_command(label="Reset search",
-                               command=self.do_reset_search)
+        self.searchmenu.add_command(label="Restart search",
+                               command=self.do_reset_search,
+                               state=tk.DISABLED)
 
         self.menubar.add_cascade(label="Search", menu=self.searchmenu)
 
@@ -130,13 +131,14 @@ class GUI(object):
         self.connection_file_name = None
         
         self.filemenu.entryconfig(1, state=tk.NORMAL)
-
-        print(repr(self.menubar.component(0)))
+        self.searchmenu.entryconfig(0, state=tk.DISABLED)
     
     def do_open_connections(self):
         self.connection_file_name = tkfile.askopenfilename()
 
-        
+        self.do_reset_search()
+
+        self.searchmenu.entryconfig(0, state=tk.NORMAL)
 
     def do_reset_search(self):
         pass
