@@ -11,13 +11,14 @@ import tkinter as tk
 class GUI(object):
 
     def __init__ (self, root):
+        self.root = root
 
-        self._initialize_menus(root)
-        self._initialize_window(root)
+        self._initialize_menus()
+        self._initialize_window()
 
     
-    def _initialize_menus (self, root):
-        menubar = tk.Menu(root)
+    def _initialize_menus (self):
+        menubar = tk.Menu(self.root)
 
         filemenu = tk.Menu(menubar, tearoff=0)
         filemenu.add_command(label="Open locations file...",
@@ -30,19 +31,25 @@ class GUI(object):
 
         menubar.add_cascade(label="File", menu=filemenu)
 
-        root.config(menu=menubar)
+        searchmenu = tk.Menu(menubar, tearoff=0)
+        searchmenu.add_command(label="Reset search",
+                               command=self.do_reset_search)
+
+        menubar.add_cascade(label="Search", menu=searchmenu)
+
+        self.root.config(menu=menubar)
 
 
-    def _initialize_window (self, root):
+    def _initialize_window (self):
 
         # Set minimum size, prevent vertical stretching.
-        root.minsize(width=1000, height=800)
-        root.resizable(width=True, height=False)
+        self.root.minsize(width=1000, height=800)
+        self.root.resizable(width=True, height=False)
 
 
 
         # On the left, create a canvas.
-        self.canvas = tk.Canvas(root,
+        self.canvas = tk.Canvas(self.root,
                                 width=800, height=800,
                                 relief=tk.SUNKEN,
                                 borderwidth=1)
@@ -51,10 +58,30 @@ class GUI(object):
                          expand=False)
 
         # Everything else goes in a frame.
-        sideframe = tk.Frame(root)
+        sideframe = tk.Frame(self.root)
         sideframe.pack(side=tk.RIGHT,
                        fill=tk.BOTH,
                        expand=1)
+
+        selectorframe = tk.Frame(sideframe)
+        selectorframe.pack(side=tk.TOP)
+
+        self.searchmode = tk.IntVar(root)
+        #searchmode.set(0)
+
+        distancebutton = tk.Radiobutton(selectorframe,
+                                        text="Measure distance",
+                                        command=self.do_use_distance,
+                                        variable=self.searchmode,
+                                        value=0)
+        hopsbutton = tk.Radiobutton(selectorframe,
+                                    text="Measure hops",
+                                    command=self.do_use_hops,
+                                    variable=self.searchmode,
+                                    value=1)
+
+        distancebutton.pack(side=tk.TOP)
+        hopsbutton.pack(side=tk.TOP)
 
         # The top of the side frame gets buttons.
         buttonframe = tk.Frame(sideframe)
@@ -102,8 +129,17 @@ class GUI(object):
     def do_open_connections(self):
         pass
 
+    def do_reset_search(self):
+        pass
+
+    def do_use_distance(self):
+        pass
+
+    def do_use_hops(self):
+        pass
+
     def do_quit(self):
-        root.quit()
+        self.root.quit()
 
 
 if __name__ == "__main__":
