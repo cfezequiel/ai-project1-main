@@ -21,3 +21,6 @@ dist
 *.pyc
 *.pyo
 *.tmp*
+
+# Vim turds.
+*.swp
