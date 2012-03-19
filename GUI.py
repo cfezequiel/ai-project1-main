@@ -8,6 +8,8 @@
 
 import tkinter as tk
 import tkinter.filedialog as tkfile
+from AStarSearch import AStarSearch
+from FileParsers import parse_locations_file, parse_connections_file
 
 class GUI(object):
 
@@ -34,7 +36,7 @@ class GUI(object):
         self.menubar.add_cascade(label="File", menu=self.filemenu)
 
         self.searchmenu = tk.Menu(self.menubar, tearoff=0)
-        self.searchmenu.add_command(label="Restart search",
+        self.searchmenu.add_command(label="Start search",
                                command=self.do_reset_search,
                                state=tk.DISABLED)
 
@@ -74,12 +76,10 @@ class GUI(object):
 
         distancebutton = tk.Radiobutton(selectorframe,
                                         text="Measure distance",
-                                        command=self.do_use_distance,
                                         variable=self.searchmode,
                                         value=0)
         hopsbutton = tk.Radiobutton(selectorframe,
                                     text="Measure hops",
-                                    command=self.do_use_hops,
                                     variable=self.searchmode,
                                     value=1)
 
@@ -129,25 +129,48 @@ class GUI(object):
     def do_open_locations(self):
         self.location_file_name = tkfile.askopenfilename()
         self.connection_file_name = None
-        
+
+        try:
+            locationsfile = open(self.location_file_name)
+        except IOError:
+            print("AIEEEE")
+            return
+
+        self.cities = parse_locations_file(locationsfile)
+
         self.filemenu.entryconfig(1, state=tk.NORMAL)
         self.searchmenu.entryconfig(0, state=tk.DISABLED)
+
     
     def do_open_connections(self):
         self.connection_file_name = tkfile.askopenfilename()
 
-        self.do_reset_search()
+        try:
+            connectionsfile = open(self.connection_file_name)
+        except IOError:
+            print("AIEEEE")
+            return
 
+        self.cities = parse_connections_file(connectionsfile, self.cities)
+        
         self.searchmenu.entryconfig(0, state=tk.NORMAL)
 
     def do_reset_search(self):
-        pass
+        self.search_object = AStarSearch()
 
-    def do_use_distance(self):
-        pass
+        # DEBUG. TODO: Replace with actual specification.
+        self.search_object.origin = [x for x in self.cities if x.name == "A1"][0]
+        self.search_object.destination = [x for x in self.cities if x.name == "G5"][0]
+        self.search_object.potholes = [x for x in self.cities if x.name == "B2"] # no index
 
-    def do_use_hops(self):
-        pass
+        if self.searchmode.get() == 0:
+            self.search_object.heuristic = lambda x: x.distance_to(self.search_object.destination)
+            self.search_object.distance_func = lambda x, y: x.distance_to(y)
+        else:
+            self.search_object.heuristic = lambda x: 1
+            self.search_object.distance_func = lambda x, y: 1
+
+        self.search_object.start_search()
 
     def do_quit(self):
         self.root.quit()
