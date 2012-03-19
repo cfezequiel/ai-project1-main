@@ -8,6 +8,7 @@
 
 import tkinter as tk
 import tkinter.filedialog as tkfile
+import tkinter.messagebox as tkmsg
 from AStarSearch import AStarSearch
 from FileParsers import parse_locations_file, parse_connections_file
 
@@ -133,7 +134,7 @@ class GUI(object):
         try:
             locationsfile = open(self.location_file_name)
         except IOError:
-            print("AIEEEE")
+            tkmsg.showwarning("Error", "Error loading locations file.")
             return
 
         self.cities = parse_locations_file(locationsfile)
@@ -148,7 +149,7 @@ class GUI(object):
         try:
             connectionsfile = open(self.connection_file_name)
         except IOError:
-            print("AIEEEE")
+            tkmsg.showwarning("Error", "Error loading connections file.")
             return
 
         self.cities = parse_connections_file(connectionsfile, self.cities)
