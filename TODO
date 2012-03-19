@@ -1,0 +1,4 @@
+- Set up logging for search
+- Have cities and connections draw themselves
+- Better error handling for file problems
+
