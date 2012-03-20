@@ -46,6 +46,8 @@ class City (object):
         self.figure.draw()
         self.label.canvas = canvas
         self.label.draw()
+        canvas.tag_bind(self.figure.id, "<Button-1>", self.change_state)
+        canvas.tag_bind(self.label.id, "<Button-1>", self.change_state)
 
     def set_normal (self):
         self.state = "normal"
@@ -62,6 +64,18 @@ class City (object):
     def set_blocking (self):
         self.state = "blocking"
         self.figure.setFill("black")
+
+    def change_state (self, event):
+        if self.state == "normal":
+            self.set_starting()
+        elif self.state == "starting":
+            self.set_ending()
+        elif self.state == "ending":
+            self.set_blocking()
+        elif self.state == "blocking":
+            self.set_normal()
+        else:
+            print("lolwut")
 
     # Control how the object looks when it's printed.
     def __repr__(self):
