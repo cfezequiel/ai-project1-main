@@ -37,6 +37,8 @@ class AStarSearch (object):
         self.heuristic = heuristic
         self.distance_func = distance_func or (lambda x, y: x.distance_to(y))
 
+        self.done = False
+
     def start_search (self):
         self._frontier = [(Road(self.origin, self.origin), 0, self.heuristic(self.origin))]
         self._explored = []
@@ -48,21 +50,30 @@ class AStarSearch (object):
         which functions I still need to write."""
 
         while self.frontier_size() > 0:
-            # Should we make these variables class-level? Probably.
-            current_road, distance, estimate = self.get_next_road()
-            if current_road == None:
-                raise Exception # This really shouldn't happen.
-            current_node = current_road.destination
-            if current_node == self.destination:
-                return self.generate_path_from(current_node)
-
-            for neighbor_road in self.get_neighbors(current_node):
-                neighbor = neighbor_road.destination
-                n_distance = self.distance_func(current_node, neighbor)
-
-                self.update_frontier(neighbor_road, distance)
+            next_step()
 
         raise Exception # No route from start to end.
+
+
+    def next_step (self):
+        if self.done: return None
+
+        # Should we make these variables class-level? Probably.
+        current_road, distance, estimate = self.get_next_road()
+        if current_road == None:
+            raise Exception # This really shouldn't happen.
+        current_node = current_road.destination
+        if current_node == self.destination:
+            self.done = True
+            return current_road
+
+        for neighbor_road in self.get_neighbors(current_node):
+            neighbor = neighbor_road.destination
+            n_distance = self.distance_func(current_node, neighbor)
+
+            self.update_frontier(neighbor_road, distance)
+
+        return current_road
 
     def get_next_road (self):
         current_item = min(self._frontier, key=lambda x:x[1] + x[2])
@@ -94,7 +105,7 @@ class AStarSearch (object):
         """Get all neighbors that haven't yet been explored."""
 
         # Yes, it's a one-line method. It's just a really ugly line.
-        return [n for n in node.neighbors if n.destination not in [x[0] for x in self._explored] if n.destination not in self.potholes]
+        return [n for n in node.neighbors if n.destination not in [x[0].destination for x in self._explored] if n.destination not in self.potholes]
 
     def frontier_size (self):
         return len(self._frontier)

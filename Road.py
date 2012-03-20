@@ -37,6 +37,44 @@ class Road (object):
                 GraphUtil.Point(x1 + dx1, y1 + dy1), 
                 GraphUtil.Point(x2 - dx2, y2 - dy2))
         self.line.setArrow("last")
+        
+        self.reset()
+
+    def draw (self, canvas):
+        self.line.canvas = canvas
+
+        if self.status == "unprobed":
+            self.line.setOutline("gray")
+        elif self.status == "probed":
+            self.line.setOutline("black")
+        elif self.status == "traveled":
+            self.line.setOutline("blue")
+        else:
+            self.line.setOutline("green")
+
+        self.line.draw()
+
+    def reset (self):
+        self.status = "unprobed"
+        if self.line.canvas is not None:
+            self.line.setOutline("gray")
+            self.line.setWidth(1)
+
+    def probe (self):
+        if self.status == "unprobed":
+            if self.line.canvas is not None:
+                self.line.setOutline("black")
+                self.line.setWidth(1)
+                self.line.canvas.lift(self.line.id)
+            self.status = "probed"
+
+    def travel (self):
+        if self.status == "probed":
+            if self.line.canvas is not None:
+                self.line.setOutline("blue")
+                self.line.setWidth(2)
+                self.line.canvas.lift(self.line.id)
+            self.status = "traveled"
 
 if __name__ == "__main__":
 	print("Insert unit test here.")

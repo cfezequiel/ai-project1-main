@@ -130,7 +130,23 @@ class GUI(object):
 
     # What do we do when they click "next"?
     def do_next(self):
-        pass
+        # Slow way but it works.
+
+        if self.search_object is None: return
+
+        current_road = self.search_object.next_step()
+
+        if current_road is None:
+            # Hooray, we found it.
+
+            self.nextbutton.config(state=tk.DISABLED)
+            return
+
+        for road in current_road.destination.neighbors:
+            road.probe()
+        current_road.travel()
+
+        self.log_message("Exploring highway from " + current_road.origin.name + " to " + current_road.destination.name)
 
     def do_open_locations(self):
         newfilename = tkfile.askopenfilename()
@@ -179,8 +195,7 @@ class GUI(object):
 
         for city in self.cities:
             for road in city.neighbors:
-                road.line.canvas = self.canvas
-                road.line.draw()
+                road.draw(self.canvas)
 
         self.log_message("Loaded " + str(roadcount) + " roads.")
 
