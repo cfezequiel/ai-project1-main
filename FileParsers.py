@@ -7,6 +7,7 @@
 # Copyright (c) 2012 Benjamin Geiger <begeiger@mail.usf.edu>
 
 import City
+import Road
 from math import sqrt
 
 # Input: an open file containing city data.
@@ -88,7 +89,7 @@ def parse_connections_file(connectionsfile, locations):
                 continue
 
             # Add the connection between the cities.
-            currentlocation.neighbors.append(neighbor)
+            currentlocation.neighbors.append(Road.Road(currentlocation, neighbor))
 
     return locations
 

@@ -15,8 +15,9 @@ class City (object):
     counter = 0
 
     def __init__(self, name = None, x = 0, y = 0, neighbors = None):
-        self.figure = GraphUtil.Circle(GraphUtil.Point(x, y), len(name) * 4) 
-        self.label = GraphUtil.Text(GraphUtil.Point(x, y), name)
+        self.location = GraphUtil.Point(x, y)
+        self.figure = GraphUtil.Circle(self.location, len(name) * 4) 
+        self.label = GraphUtil.Text(self.location, name)
         self.label.setSize(8)
         
         # If they don't give us a name, assign an arbitrary name.

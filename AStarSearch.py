@@ -85,7 +85,7 @@ class AStarSearch (object):
         """Get all neighbors that haven't yet been explored."""
 
         # Yes, it's a one-line method. It's just a really ugly line.
-        return [n for n in node.neighbors if n not in [x[0] for x in self._explored] if n not in self.potholes]
+        return [n for n in [x.destination for x in node.neighbors] if n not in [x[0] for x in self._explored] if n not in self.potholes]
 
     def frontier_size (self):
         return len(self._frontier)
