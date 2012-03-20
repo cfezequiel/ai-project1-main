@@ -149,6 +149,15 @@ class GUI(object):
         self.filemenu.entryconfig(1, state=tk.NORMAL)
         self.searchmenu.entryconfig(0, state=tk.DISABLED)
 
+
+        # DEBUG: remove later
+
+        #for city in self.cities:
+        #    city.figure.canvas = self.canvas
+        #    city.figure.draw()
+        #    city.label.canvas = self.canvas
+        #    city.label.draw()
+
     
     def do_open_connections(self):
         self.connection_file_name = tkfile.askopenfilename()
