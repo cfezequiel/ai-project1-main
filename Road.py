@@ -76,6 +76,12 @@ class Road (object):
                 self.line.canvas.lift(self.line.id)
             self.status = "traveled"
 
+    def highlight (self):
+        if self.line.canvas is not None:
+            self.line.setOutline("red")
+            self.line.setWidth(4)
+            self.line.canvas.lift(self.line.id)
+
 if __name__ == "__main__":
 	print("Insert unit test here.")
 

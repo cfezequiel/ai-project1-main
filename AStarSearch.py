@@ -85,21 +85,15 @@ class AStarSearch (object):
 
     def generate_path_from (self, node):
         path = []
-        parent = node
-        while parent is not None:
-            path.append(parent)
-            try:
-                nextparent = [x[0].origin for x in self._explored if x[0].destination == parent][0]
-            except IndexError as ex:
-                nextparent = None
 
-            if nextparent == parent:
-                parent = None
+        while True:
+            road = [x[0] for x in self._explored if x[0].destination == node][0]
+            if road.origin == road.destination:
+                path.reverse()
+                return path
             else:
-                parent = nextparent
-        path.reverse()
-        
-        return path
+                path.append(road)
+                node = road.origin
 
     def get_neighbors (self, node):
         """Get all neighbors that haven't yet been explored."""

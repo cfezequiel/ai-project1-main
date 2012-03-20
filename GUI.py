@@ -139,12 +139,17 @@ class GUI(object):
         if current_road is None:
             # Hooray, we found it.
 
+            for road in self.search_object.generate_path_from(self.current_city):
+                road.highlight()
+
             self.nextbutton.config(state=tk.DISABLED)
             return
 
         for road in current_road.destination.neighbors:
             road.probe()
         current_road.travel()
+
+        self.current_city = current_road.destination
 
         self.log_message("Exploring highway from " + current_road.origin.name + " to " + current_road.destination.name)
 
