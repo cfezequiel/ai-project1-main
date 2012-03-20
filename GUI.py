@@ -105,7 +105,8 @@ class GUI(object):
         # "Next Step" button.
         self.nextbutton = tk.Button(buttonframe,
                                image=nextimage,
-                               command=self.do_next)
+                               command=self.do_next,
+                               state=tk.DISABLED)
         self.nextbutton.image = nextimage
         self.nextbutton.pack(side=tk.RIGHT)
 
@@ -220,6 +221,11 @@ class GUI(object):
         else:
             self.search_object.heuristic = lambda x: 1
             self.search_object.distance_func = lambda x, y: 1
+
+        for city in self.cities:
+            for road in city.neighbors:
+                road.reset()
+        self.nextbutton.config(state=tk.NORMAL)
 
         self.search_object.start_search()
 
