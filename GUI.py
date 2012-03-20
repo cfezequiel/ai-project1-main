@@ -148,21 +148,17 @@ class GUI(object):
 
         self.cities = parse_locations_file(locationsfile)
 
+        for city in self.cities:
+            city.figure.canvas = self.canvas
+            city.figure.draw()
+            city.label.canvas = self.canvas
+            city.label.draw()
+        
         self.log_message("Loaded " + str(len(self.cities)) + " cities.")
 
         self.filemenu.entryconfig(1, state=tk.NORMAL)
         self.searchmenu.entryconfig(0, state=tk.DISABLED)
 
-
-        # DEBUG: remove later
-
-        #for city in self.cities:
-        #    city.figure.canvas = self.canvas
-        #    city.figure.draw()
-        #    city.label.canvas = self.canvas
-        #    city.label.draw()
-
-    
     def do_open_connections(self):
         newfilename = tkfile.askopenfilename()
         if newfilename == ():
@@ -183,6 +179,11 @@ class GUI(object):
         roadcount = 0
         for city in self.cities:
             roadcount += len(city.neighbors)
+
+        for city in self.cities:
+            for road in city.neighbors:
+                road.line.canvas = self.canvas
+                road.line.draw()
 
         self.log_message("Loaded " + str(roadcount) + " roads.")
 
