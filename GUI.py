@@ -110,8 +110,13 @@ class GUI(object):
         nextbutton.pack(side=tk.RIGHT)
 
         # A place to log actions.
-        self.log = tk.Listbox(sideframe)
-        self.log.pack(side=tk.BOTTOM,
+        logframe = tk.Frame(sideframe)
+        logframe.pack(side=tk.RIGHT, fill=tk.BOTH, expand=1)
+        logscroll = tk.Scrollbar(logframe, orient=tk.VERTICAL)
+        self.log = tk.Listbox(logframe, yscrollcommand=logscroll.set)
+        logscroll.config(command=self.log.yview)
+        logscroll.pack(side=tk.RIGHT, fill=tk.Y, expand=1)
+        self.log.pack(side=tk.LEFT,
                       fill=tk.BOTH,
                       expand=1)
 
@@ -139,6 +144,8 @@ class GUI(object):
 
         self.cities = parse_locations_file(locationsfile)
 
+        self.log_message("Loaded " + str(len(self.cities)) + " cities.")
+
         self.filemenu.entryconfig(1, state=tk.NORMAL)
         self.searchmenu.entryconfig(0, state=tk.DISABLED)
 
@@ -153,7 +160,13 @@ class GUI(object):
             return
 
         self.cities = parse_connections_file(connectionsfile, self.cities)
-        
+
+        roadcount = 0
+        for city in self.cities:
+            roadcount += len(city.neighbors)
+
+        self.log_message("Loaded " + str(roadcount) + " roads.")
+
         self.searchmenu.entryconfig(0, state=tk.NORMAL)
 
     def do_reset_search(self):
@@ -175,6 +188,10 @@ class GUI(object):
 
     def do_quit(self):
         self.root.quit()
+
+    def log_message (self, message):
+        self.log.insert(tk.END, message)
+        self.log.see(tk.END)
 
 
 if __name__ == "__main__":
