@@ -137,8 +137,7 @@ class GraphicsObject:
         object is not currently drawn."""
         
         if not self.canvas: return
-        if not self.canvas.isClosed():
-            self.canvas.delete(self.id)
+        self.canvas.delete(self.id)
         self.id = None
 
 
@@ -148,7 +147,7 @@ class GraphicsObject:
         direction"""
         
         self._move(dx,dy)
-        if self.canvas and not self.canvas.isClosed():
+        if self.canvas:
             self.canvas.move(self.id, dx, dy)
            
     def _reconfig(self, option, setting):
@@ -159,11 +158,8 @@ class GraphicsObject:
             raise GraphicsError(UNSUPPORTED_METHOD)
         options = self.config
         options[option] = setting
-        if self.canvas and not self.canvas.isClosed():
+        if self.canvas:
             self.canvas.itemconfig(self.id, options)
-            if self.canvas.autoflush:
-                _root.update()
-
 
     def _draw(self, canvas, options):
         """draws appropriate figure on canvas with options provided
