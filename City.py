@@ -15,8 +15,9 @@ class City (object):
     counter = 0
 
     def __init__(self, name = None, x = 0, y = 0, neighbors = None):
-        self.figure = GraphUtil.Circle(GraphUtil.Point(x, y), len(name) * 5) 
+        self.figure = GraphUtil.Circle(GraphUtil.Point(x, y), len(name) * 4) 
         self.label = GraphUtil.Text(GraphUtil.Point(x, y), name)
+        self.label.setSize(8)
         
         # If they don't give us a name, assign an arbitrary name.
         if name is None:
@@ -36,6 +37,12 @@ class City (object):
     # Compute distance to another city.
     def distance_to(self, other):
         return sqrt((self.x - other.x)**2 + (self.y - other.y)**2)
+
+    def draw(self, canvas):
+        self.figure.canvas = canvas
+        self.figure.draw()
+        self.label.canvas = canvas
+        self.label.draw()
 
     # Control how the object looks when it's printed.
     def __repr__(self):
