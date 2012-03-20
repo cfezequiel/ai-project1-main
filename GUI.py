@@ -133,12 +133,16 @@ class GUI(object):
         pass
 
     def do_open_locations(self):
-        self.location_file_name = tkfile.askopenfilename()
+        newfilename = tkfile.askopenfilename()
+        if not newfilename:
+            return
+        self.location_file_name = newfilename
         self.connection_file_name = None
 
         try:
             locationsfile = open(self.location_file_name)
         except IOError:
+            print(repr(self.location_file_name))
             tkmsg.showwarning("Error", "Error loading locations file.")
             return
 
@@ -160,13 +164,19 @@ class GUI(object):
 
     
     def do_open_connections(self):
-        self.connection_file_name = tkfile.askopenfilename()
+        newfilename = tkfile.askopenfilename()
+        if newfilename == ():
+            return
+        self.connection_file_name = newfilename
 
         try:
             connectionsfile = open(self.connection_file_name)
         except IOError:
             tkmsg.showwarning("Error", "Error loading connections file.")
             return
+
+        for city in self.cities:
+            city.neighbors = []
 
         self.cities = parse_connections_file(connectionsfile, self.cities)
 
