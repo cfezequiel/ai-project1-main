@@ -1,0 +1,5 @@
+- Set up logging for search
+- Have cities and connections draw themselves
+    - Select cities for start and end, plus blocked
+- Better error handling for file problems
+
