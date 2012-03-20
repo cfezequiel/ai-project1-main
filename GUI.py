@@ -37,9 +37,12 @@ class GUI(object):
         self.menubar.add_cascade(label="File", menu=self.filemenu)
 
         self.searchmenu = tk.Menu(self.menubar, tearoff=0)
-        self.searchmenu.add_command(label="Start search",
-                               command=self.do_reset_search,
-                               state=tk.DISABLED)
+        self.searchmenu.add_command(label="Start search by distance",
+                command=lambda: self.do_start_search("distance"),
+                state=tk.DISABLED)
+        self.searchmenu.add_command(label="Start search by link count",
+                command=lambda: self.do_start_search("linkcount"),
+                state=tk.DISABLED)
 
         self.menubar.add_cascade(label="Search", menu=self.searchmenu)
 
@@ -68,24 +71,6 @@ class GUI(object):
         sideframe.pack(side=tk.RIGHT,
                        fill=tk.BOTH,
                        expand=1)
-
-        selectorframe = tk.Frame(sideframe)
-        selectorframe.pack(side=tk.TOP)
-
-        self.searchmode = tk.IntVar(root)
-        #searchmode.set(0)
-
-        distancebutton = tk.Radiobutton(selectorframe,
-                                        text="Measure distance",
-                                        variable=self.searchmode,
-                                        value=0)
-        hopsbutton = tk.Radiobutton(selectorframe,
-                                    text="Measure hops",
-                                    variable=self.searchmode,
-                                    value=1)
-
-        distancebutton.pack(side=tk.TOP)
-        hopsbutton.pack(side=tk.TOP)
 
         # The top of the side frame gets buttons.
         buttonframe = tk.Frame(sideframe)
@@ -177,6 +162,7 @@ class GUI(object):
 
         self.filemenu.entryconfig(1, state=tk.NORMAL)
         self.searchmenu.entryconfig(0, state=tk.DISABLED)
+        self.searchmenu.entryconfig(1, state=tk.DISABLED)
 
     def do_open_connections(self):
         newfilename = tkfile.askopenfilename()
@@ -206,8 +192,9 @@ class GUI(object):
         self.log_message("Loaded " + str(roadcount) + " roads.")
 
         self.searchmenu.entryconfig(0, state=tk.NORMAL)
+        self.searchmenu.entryconfig(1, state=tk.NORMAL)
 
-    def do_reset_search(self):
+    def do_start_search (self, method): 
         self.search_object = AStarSearch()
 
         # DEBUG. TODO: Replace with actual specification.
@@ -215,10 +202,10 @@ class GUI(object):
         self.search_object.destination = [x for x in self.cities if x.name == "G5"][0]
         self.search_object.potholes = [x for x in self.cities if x.name == "B2"] # no index
 
-        if self.searchmode.get() == 0:
+        if method == "distance":
             self.search_object.heuristic = lambda x: x.distance_to(self.search_object.destination)
             self.search_object.distance_func = lambda x, y: x.distance_to(y)
-        else:
+        elif method == "linkcount":
             self.search_object.heuristic = lambda x: 1
             self.search_object.distance_func = lambda x, y: 1
 
