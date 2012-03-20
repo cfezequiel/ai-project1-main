@@ -107,6 +107,9 @@ class AStarSearch (object):
                         self.heuristic(new_node),
                         current_node))
 
+    def get_frontier_city_names (self):
+        return [c[0].name for c in self._frontier]
+
 if __name__ == "__main__":
 	print("Insert unit test here.")
 
