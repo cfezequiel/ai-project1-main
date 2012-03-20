@@ -212,6 +212,11 @@ class GUI(object):
         self.log.insert(tk.END, message)
         self.log.see(tk.END)
 
+    def undraw_all (self):
+        for obj in self.canvas.find_all():
+            self.canvas.delete(obj)
+
+
 
 if __name__ == "__main__":
     root = tk.Tk()
