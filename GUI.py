@@ -92,22 +92,22 @@ class GUI(object):
         buttonframe.pack(side=tk.TOP)
         
         # Images to put in the buttons.
-        previmage = tk.PhotoImage(file="images/left_button.gif")
+        #previmage = tk.PhotoImage(file="images/left_button.gif")
         nextimage = tk.PhotoImage(file="images/right_button.gif")
 
         # "Previous Step" button.
-        prevbutton = tk.Button(buttonframe,
-                               image=previmage,
-                               command=self.do_previous)
-        prevbutton.image = previmage
-        prevbutton.pack(side=tk.LEFT)
+        #prevbutton = tk.Button(buttonframe,
+        #                       image=previmage,
+        #                       command=self.do_previous)
+        #prevbutton.image = previmage
+        #prevbutton.pack(side=tk.LEFT)
         
         # "Next Step" button.
-        nextbutton = tk.Button(buttonframe,
+        self.nextbutton = tk.Button(buttonframe,
                                image=nextimage,
                                command=self.do_next)
-        nextbutton.image = nextimage
-        nextbutton.pack(side=tk.RIGHT)
+        self.nextbutton.image = nextimage
+        self.nextbutton.pack(side=tk.RIGHT)
 
         # A place to log actions.
         logframe = tk.Frame(sideframe)
