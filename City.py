@@ -17,7 +17,8 @@ class City (object):
     def __init__(self, name = None, x = 0, y = 0, neighbors = None):
         self.location = GraphUtil.Point(x, y)
         self.radius = len(name) * 4
-        self.figure = GraphUtil.Circle(self.location, self.radius) 
+        self.figure = GraphUtil.Circle(self.location, self.radius)
+        self.figure.setFill("white")
         self.label = GraphUtil.Text(self.location, name)
         self.label.setSize(8)
         
@@ -34,7 +35,7 @@ class City (object):
         self.neighbors = neighbors or []
 
         # State (start, end or blocking)
-        self.state = None
+        self.state = "normal"
 
     # Compute distance to another city.
     def distance_to(self, other):
@@ -45,6 +46,22 @@ class City (object):
         self.figure.draw()
         self.label.canvas = canvas
         self.label.draw()
+
+    def set_normal (self):
+        self.state = "normal"
+        self.figure.setFill("white")
+
+    def set_starting (self):
+        self.state = "starting"
+        self.figure.setFill("green")
+
+    def set_ending (self):
+        self.state = "ending"
+        self.figure.setFill("red")
+
+    def set_blocking (self):
+        self.state = "blocking"
+        self.figure.setFill("black")
 
     # Control how the object looks when it's printed.
     def __repr__(self):
