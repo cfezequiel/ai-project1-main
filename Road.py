@@ -18,25 +18,28 @@ class Road (object):
         self.create_line()
 
     def create_line (self):
-        x1 = self.origin.location.x
-        y1 = self.origin.location.y
-        r1 = self.origin.radius
-        x2 = self.destination.location.x
-        y2 = self.destination.location.y
-        r2 = self.destination.radius
+        if self.origin is None or self.destination is None:
+            self.line = None
+        else:
+            x1 = self.origin.location.x
+            y1 = self.origin.location.y
+            r1 = self.origin.radius
+            x2 = self.destination.location.x
+            y2 = self.destination.location.y
+            r2 = self.destination.radius
 
-        theta = atan2(y2 - y1, x2 - x1)
+            theta = atan2(y2 - y1, x2 - x1)
 
-        dx1 = r1 * cos(theta)
-        dy1 = r1 * sin(theta)
+            dx1 = r1 * cos(theta)
+            dy1 = r1 * sin(theta)
 
-        dx2 = r2 * cos(theta)
-        dy2 = r2 * sin(theta)
+            dx2 = r2 * cos(theta)
+            dy2 = r2 * sin(theta)
 
-        self.line = GraphUtil.Line(
-                GraphUtil.Point(x1 + dx1, y1 + dy1), 
-                GraphUtil.Point(x2 - dx2, y2 - dy2))
-        self.line.setArrow("last")
+            self.line = GraphUtil.Line(
+                    GraphUtil.Point(x1 + dx1, y1 + dy1), 
+                    GraphUtil.Point(x2 - dx2, y2 - dy2))
+            self.line.setArrow("last")
         
         self.reset()
 
@@ -56,7 +59,7 @@ class Road (object):
 
     def reset (self):
         self.status = "unprobed"
-        if self.line.canvas is not None:
+        if self.line is not None and self.line.canvas is not None:
             self.line.setOutline("gray")
             self.line.setWidth(1)
 

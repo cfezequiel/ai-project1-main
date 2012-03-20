@@ -40,7 +40,7 @@ class AStarSearch (object):
         self.done = False
 
     def start_search (self):
-        self._frontier = [(Road(self.origin, self.origin), 0, self.heuristic(self.origin))]
+        self._frontier = [(Road(None, self.origin), 0, self.heuristic(self.origin))]
         self._explored = []
 
     def run_to_end (self):
@@ -88,7 +88,7 @@ class AStarSearch (object):
 
         while True:
             road = [x[0] for x in self._explored if x[0].destination == node][0]
-            if road.origin == road.destination:
+            if road.origin is None or road.origin == road.destination:
                 path.reverse()
                 return path
             else:

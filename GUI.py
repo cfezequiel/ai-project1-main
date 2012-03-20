@@ -137,7 +137,10 @@ class GUI(object):
 
         self.current_city = current_road.destination
 
-        self.log_message("Exploring highway from " + current_road.origin.name + " to " + current_road.destination.name)
+        if current_road.origin is None:
+            self.log_message("Beginning search at " + current_road.destination.name)
+        else:
+            self.log_message("Exploring highway from " + current_road.origin.name + " to " + current_road.destination.name)
 
     def do_open_locations(self):
         newfilename = tkfile.askopenfilename()
