@@ -149,10 +149,7 @@ class GUI(object):
         self.cities = parse_locations_file(locationsfile)
 
         for city in self.cities:
-            city.figure.canvas = self.canvas
-            city.figure.draw()
-            city.label.canvas = self.canvas
-            city.label.draw()
+            city.draw(self.canvas)
         
         self.log_message("Loaded " + str(len(self.cities)) + " cities.")
 
