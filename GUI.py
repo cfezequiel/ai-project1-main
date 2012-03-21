@@ -101,7 +101,7 @@ class GUI(object):
         logscroll = tk.Scrollbar(logframe, orient=tk.VERTICAL)
         self.log = tk.Listbox(logframe, yscrollcommand=logscroll.set)
         logscroll.config(command=self.log.yview)
-        logscroll.pack(side=tk.RIGHT, fill=tk.Y, expand=1)
+        logscroll.pack(side=tk.RIGHT, fill=tk.Y, expand=0)
         self.log.pack(side=tk.LEFT,
                       fill=tk.BOTH,
                       expand=1)
