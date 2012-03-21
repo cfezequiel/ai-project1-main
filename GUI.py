@@ -55,10 +55,30 @@ class GUI(object):
         self.root.minsize(width=1000, height=800)
         self.root.resizable(width=True, height=False)
 
+        # Top frame
+        self.topframe = tk.Frame(self.root)
+        self.topframe.pack(side=tk.TOP)
 
+        # Start city option menu
+        startlabel = tk.Label(self.topframe, text="Start city")
+        startlabel.pack(side=tk.LEFT)
+        self.startcity = tk.StringVar(self.topframe)
+        self.startcity.set("")
+        self.startoptionmenu = tk.OptionMenu(self.topframe, self.startcity, "")
+        self.startoptionmenu.pack(side=tk.LEFT)
+
+        # End city option menu
+        endlabel = tk.Label(self.topframe, text="End city")
+        endlabel.pack(side=tk.LEFT)
+        self.endcity = tk.StringVar(self.topframe)
+        self.endcity.set("")
+        self.endoptionmenu = tk.OptionMenu(self.topframe, self.endcity, "")
+        self.endoptionmenu.pack(side=tk.LEFT)
 
         # On the left, create a canvas.
-        self.canvas = tk.Canvas(self.root,
+        canvasframe = tk.Frame(self.root)
+        canvasframe.pack(side=tk.LEFT)
+        self.canvas = tk.Canvas(canvasframe,
                                 width=800, height=800,
                                 relief=tk.SUNKEN,
                                 borderwidth=1)
@@ -66,7 +86,7 @@ class GUI(object):
                          fill=tk.NONE,
                          expand=False)
 
-        # Everything else goes in a frame.
+        # On the right, we have the side panel.
         sideframe = tk.Frame(self.root)
         sideframe.pack(side=tk.RIGHT,
                        fill=tk.BOTH,
@@ -169,6 +189,35 @@ class GUI(object):
         self.searchmenu.entryconfig(0, state=tk.DISABLED)
         self.searchmenu.entryconfig(1, state=tk.DISABLED)
 
+        citynames = [x.name for x in self.cities]
+
+        # Add cities to the start and end city option menus
+        # Remove 'dummy' menu items
+        self.startoptionmenu['menu'].delete(0, 'end')
+        self.endoptionmenu['menu'].delete(0, 'end')
+
+        def startcallback(item):
+            # FIXME: might not need line below
+            #self.startoptionmenu.configure(text=item)
+            self.startcity.set(item)
+
+        def endcallback(item):
+            # FIXME: might not need line below
+            #self.endoptionmenu.configure(text=item)
+            self.endcity.set(item)
+
+        for city in citynames:
+            self.startoptionmenu['menu'].add_command(label=city, \
+                command=lambda item=city: startcallback(item))
+
+            self.endoptionmenu['menu'].add_command(label=city, \
+                command=lambda item=city: endcallback(item))
+
+        # Set default start and end cities
+        self.startcity.set(citynames[0])
+        self.endcity.set(citynames[0])
+
+
     def do_open_connections(self):
         newfilename = tkfile.askopenfilename()
         if newfilename == ():
@@ -203,8 +252,8 @@ class GUI(object):
         self.search_object = AStarSearch()
 
         # DEBUG. TODO: Replace with actual specification.
-        self.search_object.origin = [x for x in self.cities if x.name == "A1"][0]
-        self.search_object.destination = [x for x in self.cities if x.name == "G5"][0]
+        self.search_object.origin = [x for x in self.cities if x.name == self.startcity.get()][0]
+        self.search_object.destination = [x for x in self.cities if x.name == self.endcity.get()][0]
         self.search_object.potholes = [x for x in self.cities if x.name == "B2"] # no index
 
         if method == "distance":
