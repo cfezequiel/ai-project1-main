@@ -240,8 +240,8 @@ class GUI(object):
         self.do_set_end_city(citynames[0])
 
         # Enable exclude button
-        self.excludebutton.config(state=tk.NORMAL)
-        self.clearexcludebutton.config(state=tk.NORMAL)
+        #self.excludebutton.config(state=tk.NORMAL)
+        #self.clearexcludebutton.config(state=tk.NORMAL)
 
     def do_set_start_city(self, cityname):
         """Set a new origin city on the canvas."""
