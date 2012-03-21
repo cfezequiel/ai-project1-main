@@ -65,45 +65,26 @@ class GUI(object):
         self.root.minsize(width=1200, height=800)
         self.root.resizable(width=True, height=False)
 
-        # Top frame
-        self.topframe = tk.Frame(self.root)
-        self.topframe.pack(side=tk.TOP)
-
-        # Start city option menu
-        startlabel = tk.Label(self.topframe, text="Start city")
-        startlabel.pack(side=tk.LEFT)
-        self.startcity = tk.StringVar(self.topframe)
-        self.startcity.set("")
-        self.startoptionmenu = tk.OptionMenu(self.topframe, self.startcity, "")
-        self.startoptionmenu.pack(side=tk.LEFT)
-
-        # End city option menu
-        endlabel = tk.Label(self.topframe, text="End city")
-        endlabel.pack(side=tk.LEFT)
-        self.endcity = tk.StringVar(self.topframe)
-        self.endcity.set("")
-        self.endoptionmenu = tk.OptionMenu(self.topframe, self.endcity, "")
-        self.endoptionmenu.pack(side=tk.LEFT)
 
         # Excluded cities entry
-        excludelabel = tk.Label(self.topframe, text="Excluded cities")
-        excludelabel.pack(side=tk.LEFT)
-        self.excludeentry = tk.Entry(self.topframe)
-        self.excludeentry.pack(side=tk.LEFT)
+        #excludelabel = tk.Label(self.topframe, text="Excluded cities")
+        #excludelabel.pack(side=tk.LEFT)
+        #self.excludeentry = tk.Entry(self.topframe)
+        #self.excludeentry.pack(side=tk.LEFT)
 
         # Excluded cities update button
-        self.excludebutton = tk.Button(self.topframe, 
-                                       text = 'Update', 
-                                       state=tk.DISABLED,
-                                       command=self.do_update_excluded_cities)
-        self.excludebutton.pack(side=tk.LEFT)
+        #self.excludebutton = tk.Button(self.topframe, 
+        #                               text = 'Update', 
+        #                               state=tk.DISABLED,
+        #                               command=self.do_update_excluded_cities)
+        #self.excludebutton.pack(side=tk.LEFT)
 
         # Clear excluded cities button
-        self.clearexcludebutton = tk.Button(self.topframe, 
-                                            text = 'Clear all', 
-                                            state=tk.DISABLED,
-                                            command=self.do_clear_all_exclusions)
-        self.clearexcludebutton.pack(side=tk.LEFT)
+        #self.clearexcludebutton = tk.Button(self.topframe, 
+        #                                    text = 'Clear all', 
+        #                                    state=tk.DISABLED,
+        #                                    command=self.do_clear_all_exclusions)
+        #self.clearexcludebutton.pack(side=tk.LEFT)
 
         # On the left, create a canvas.
         canvasframe = tk.Frame(self.root)
@@ -124,8 +105,29 @@ class GUI(object):
 
         # The top of the side frame gets buttons.
         buttonframe = tk.Frame(sideframe)
-        buttonframe.pack(side=tk.TOP)
-        
+        buttonframe.pack(side=tk.TOP, fill=tk.X)
+        buttonframe.grid_columnconfigure(2, weight=1)
+
+        # Top frame
+        #self.topframe = tk.Frame(buttonframe)
+        #self.topframe.pack(side=tk.LEFT)
+
+        # Start city option menu
+        startlabel = tk.Label(buttonframe, text="Start city")
+        startlabel.grid(row=0, column=0)
+        self.startcity = tk.StringVar(buttonframe)
+        self.startcity.set("")
+        self.startoptionmenu = tk.OptionMenu(buttonframe, self.startcity, "")
+        self.startoptionmenu.grid(row=0, column=1)
+
+        # End city option menu
+        endlabel = tk.Label(buttonframe, text="End city")
+        endlabel.grid(row=1, column=0)
+        self.endcity = tk.StringVar(buttonframe)
+        self.endcity.set("")
+        self.endoptionmenu = tk.OptionMenu(buttonframe, self.endcity, "")
+        self.endoptionmenu.grid(row=1, column=1)
+
         # Images to put in the buttons.
         playimage = tk.PhotoImage(file="images/play_button.gif")
         nextimage = tk.PhotoImage(file="images/next_button.gif")
@@ -136,7 +138,7 @@ class GUI(object):
                                command=self.do_play,
                                state=tk.DISABLED)
         self.playbutton.image = playimage
-        self.playbutton.pack(side=tk.LEFT)
+        self.playbutton.grid(row=0, rowspan=2, column=3)
         
         # "Next Step" button.
         self.nextbutton = tk.Button(buttonframe,
@@ -144,7 +146,7 @@ class GUI(object):
                                command=self.do_next,
                                state=tk.DISABLED)
         self.nextbutton.image = nextimage
-        self.nextbutton.pack(side=tk.RIGHT)
+        self.nextbutton.grid(row=0, rowspan=2, column=4)
 
         # A place to log actions.
         logframe = tk.Frame(sideframe)
