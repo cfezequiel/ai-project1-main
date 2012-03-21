@@ -52,7 +52,7 @@ class GUI(object):
     def _initialize_window (self):
 
         # Set minimum size, prevent vertical stretching.
-        self.root.minsize(width=1000, height=800)
+        self.root.minsize(width=1200, height=800)
         self.root.resizable(width=True, height=False)
 
 
@@ -141,7 +141,7 @@ class GUI(object):
             self.log_message("Beginning search at " + current_road.destination.name)
         else:
             self.log_message("Going from " + current_road.origin.name + " to " + current_road.destination.name)
-            self.log_message("Total distance traveled: " + str(distance + total_distance))
+            self.log_message("Total distance traveled: " + str(total_distance))
             self.log_message("Estimated distance from " + current_road.destination.name + ": " + str(estimate))
 
     def do_open_locations(self):
@@ -212,7 +212,7 @@ class GUI(object):
             self.search_object.distance_func = lambda x, y: x.distance_to(y)
         elif method == "linkcount":
             self.search_object.heuristic = lambda x: 1
-            self.search_object.distance_func = lambda x, y: 1
+            self.search_object.distance_func = lambda x, y: (x is not None and y is not None) and 1 or 0
 
         for city in self.cities:
             for road in city.neighbors:

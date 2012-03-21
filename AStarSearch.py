@@ -65,16 +65,16 @@ class AStarSearch (object):
         current_node = current_road.destination
         if current_node == self.destination:
             self.done = True
-            return current_road, distance, current_road.origin.distance_to(current_road.destination), 0
+            return current_road, distance, self.distance_func(current_road.origin, current_road.destination), 0
 
         for neighbor_road in self.get_neighbors(current_node):
             neighbor = neighbor_road.destination
-            n_distance = self.distance_func(current_node, neighbor)
+            #n_distance = self.distance_func(current_node, neighbor)
 
             self.update_frontier(neighbor_road, distance)
 
         if current_road.origin is not None:
-            distance_traveled = current_road.origin.distance_to(current_road.destination)
+            distance_traveled = self.distance_func(current_road.origin, current_road.destination)
         else:
             distance_traveled = None
 
