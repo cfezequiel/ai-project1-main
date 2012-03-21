@@ -126,8 +126,6 @@ class GUI(object):
                       fill=tk.BOTH,
                       expand=1)
 
-
-
     # Callbacks
 
     # What do we do when they click "previous"?
@@ -189,34 +187,53 @@ class GUI(object):
         self.searchmenu.entryconfig(0, state=tk.DISABLED)
         self.searchmenu.entryconfig(1, state=tk.DISABLED)
 
-        citynames = [x.name for x in self.cities]
 
         # Add cities to the start and end city option menus
+        citynames = [x.name for x in self.cities]
+
         # Remove 'dummy' menu items
         self.startoptionmenu['menu'].delete(0, 'end')
         self.endoptionmenu['menu'].delete(0, 'end')
 
-        def startcallback(item):
-            # FIXME: might not need line below
-            #self.startoptionmenu.configure(text=item)
-            self.startcity.set(item)
-
-        def endcallback(item):
-            # FIXME: might not need line below
-            #self.endoptionmenu.configure(text=item)
-            self.endcity.set(item)
-
+        # Add each city as a menu item
         for city in citynames:
             self.startoptionmenu['menu'].add_command(label=city, \
-                command=lambda item=city: startcallback(item))
+                command=lambda item=city: self.do_set_start_city(item))
 
             self.endoptionmenu['menu'].add_command(label=city, \
-                command=lambda item=city: endcallback(item))
+                command=lambda item=city: self.do_set_end_city(item))
 
         # Set default start and end cities
-        self.startcity.set(citynames[0])
-        self.endcity.set(citynames[0])
+        self.do_set_start_city(citynames[0])
+        self.do_set_end_city(citynames[0])
 
+    def do_set_start_city(self, cityname):
+        """Set a new origin city on the canvas."""
+
+        self.startcity.set(cityname)
+        try:
+            prevstartcity = [x for x in self.cities if x.state == 'starting'][0]
+            prevstartcity.set_normal()
+            prevstartcity.draw(self.canvas)
+        except IndexError:
+            pass
+        city = [x for x in self.cities if x.name == cityname][0]
+        city.set_starting()
+        city.draw(self.canvas)
+
+    def do_set_end_city(self, cityname):
+        """Set a new destination city on the canvas."""
+
+        self.endcity.set(cityname)
+        try:
+            prevendcity = [x for x in self.cities if x.state == 'ending'][0]
+            prevendcity.set_normal()
+            prevendcity.draw(self.canvas)
+        except IndexError:
+            pass
+        city = [x for x in self.cities if x.name == cityname][0]
+        city.set_ending()
+        city.draw(self.canvas)
 
     def do_open_connections(self):
         newfilename = tkfile.askopenfilename()
@@ -251,10 +268,9 @@ class GUI(object):
     def do_start_search (self, method): 
         self.search_object = AStarSearch()
 
-        # DEBUG. TODO: Replace with actual specification.
         self.search_object.origin = [x for x in self.cities if x.name == self.startcity.get()][0]
         self.search_object.destination = [x for x in self.cities if x.name == self.endcity.get()][0]
-        self.search_object.potholes = [x for x in self.cities if x.name == "B2"] # no index
+        self.search_object.potholes = [x for x in self.cities if x.state == "blocking"] # no index
 
         if method == "distance":
             self.search_object.heuristic = lambda x: x.distance_to(self.search_object.destination)

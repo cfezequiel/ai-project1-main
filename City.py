@@ -100,10 +100,6 @@ class City (object):
         """Change this City's state according to the given event."""
 
         if self.state == "normal":
-            self.set_starting()
-        elif self.state == "starting":
-            self.set_ending()
-        elif self.state == "ending":
             self.set_blocking()
         elif self.state == "blocking":
             self.set_normal()
