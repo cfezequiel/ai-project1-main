@@ -88,6 +88,8 @@ class AStarSearch (object):
         return (current_road, distance, distance_traveled, self.heuristic(current_road.destination))
 
     def get_next_road (self):
+        if len(self._frontier) <= 0:
+            raise RuntimeError("All roads have been explored.")
         current_item = min(self._frontier, key=lambda x:x[1] + x[2])
 
         self._frontier.remove(current_item)

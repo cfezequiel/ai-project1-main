@@ -173,7 +173,13 @@ class GUI(object):
             self.disable_search_GUI()
             return
 
-        current_road, total_distance, distance, estimate = self.search_object.next_step()
+        try:        
+            current_road, total_distance, distance, estimate = self.search_object.next_step()
+        except RuntimeError as ex:
+            self.disable_search_GUI()
+            tkmsg.showerror(
+                    "Invalid Search State", 
+                    "No valid route exists between the selected cities.")
 
         if current_road is None:
             # Hooray, we found it.
@@ -213,7 +219,7 @@ class GUI(object):
             locationsfile = open(self.location_file_name)
         except IOError:
             print(repr(self.location_file_name))
-            tkmsg.showwarning("Error", "Error loading locations file.")
+            tkmsg.showerror("Error", "Error loading locations file.")
             return
 
         self.cities = parse_locations_file(locationsfile)
