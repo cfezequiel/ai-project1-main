@@ -2,16 +2,37 @@
 #
 # 
 #
-# Description.
+# /file City.py
 #
-# Copyright (c) 2012 Benjamin Geiger <begeiger@mail.usf.edu>
+# Copyright (c) 2012 
+#
+# Benjamin Geiger <begeiger@mail.usf.edu>
+# Carlos Ezequiel <cfezequiel@mail.usf.edu>
 
 from math import sqrt
 import GraphUtil
 
 
-# City
 class City (object):
+    """Represents a City node.
+
+    Class attributes:
+        counter  Index on the number of City objects created. 
+                 This is used as an identifier for an 'unnamed' city.
+
+    Object attributes:
+        location Point object representing the center
+        radius   Radius of the City
+        figure   Graphical representation of the city (default: Circle)
+        label    Text object for displaying city name
+        name     City name
+        x        X-coordinate of the city center
+        y        Y-coordinate of the city center
+        neighbors List of adjacent cities connected by a road
+        state    The City's state (i.e. starting, ending, blocking)
+                
+    """
+
     counter = 0
 
     def __init__(self, name = None, x = 0, y = 0, neighbors = None):
@@ -39,9 +60,13 @@ class City (object):
 
     # Compute distance to another city.
     def distance_to(self, other):
+        """Returns the Euclidean distance from this City to another City."""
+
         return sqrt((self.x - other.x)**2 + (self.y - other.y)**2)
 
     def draw(self, canvas):
+        """Draws this object on the given canvas."""
+
         self.figure.canvas = canvas
         self.figure.draw()
         self.label.canvas = canvas
@@ -50,27 +75,33 @@ class City (object):
         canvas.tag_bind(self.label.id, "<Button-1>", self.change_state)
 
     def set_normal (self):
+        """Sets this City as 'normal'."""
+
         self.state = "normal"
         self.figure.setFill("white")
 
     def set_starting (self):
+        """Sets this City as the origin."""
+
         self.state = "starting"
         self.figure.setFill("green")
 
     def set_ending (self):
+        """Sets this City as the destination."""
+
         self.state = "ending"
         self.figure.setFill("red")
 
     def set_blocking (self):
+        """Mark this City to be avoided."""
+
         self.state = "blocking"
         self.figure.setFill("black")
 
     def change_state (self, event):
+        """Change this City's state according to the given event."""
+
         if self.state == "normal":
-            self.set_starting()
-        elif self.state == "starting":
-            self.set_ending()
-        elif self.state == "ending":
             self.set_blocking()
         elif self.state == "blocking":
             self.set_normal()

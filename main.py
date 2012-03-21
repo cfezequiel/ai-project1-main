@@ -2,9 +2,14 @@
 #
 # 
 #
-# Description.
+# /file main.py
 #
-# Copyright (c) 2012 Benjamin Geiger <begeiger@mail.usf.edu>
+# Copyright (c) 2012 
+#
+# Benjamin Geiger <begeiger@mail.usf.edu>
+# Carlos Ezequiel <cfezequiel@mail.usf.edu>
+
+"""Console version of the A* Algorithm program."""
 
 import sys
 
@@ -50,12 +55,16 @@ except IndexError:
 avoidcities = [x for x in locations if x.name in sys.argv[5:]]
 
 
-
+# Create the search object
 search = AStarSearch(startcity, destcity, lambda x: x.distance_to(destcity), potholes=avoidcities)
+
+# Run the search algorithm
 search.start_search()
+
+# Get the shortest path traversed
 path = search.run_to_end()
 
+# Output path to standard output
 print("->".join([x.name for x in path]))
-
 
 # vim: set et sw=4 ts=4: 

@@ -2,9 +2,14 @@
 #
 # 
 #
-# Description.
+# /file AStarSearch.py
 #
-# Copyright (c) 2012 Benjamin Geiger <begeiger@mail.usf.edu>
+# Copyright (c) 2012 
+#
+# Benjamin Geiger <begeiger@mail.usf.edu>
+# Carlos Ezequiel <cfezequiel@mail.usf.edu>
+
+""" A* Search Algorithm library """
 
 from Road import Road
 from City import City
@@ -56,6 +61,8 @@ class AStarSearch (object):
 
 
     def next_step (self):
+        """ Search the next adjacent cities for the best path."""
+
         if self.done: return (None, None, None, None)
 
         # Should we make these variables class-level? Probably.

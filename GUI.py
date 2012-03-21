@@ -2,9 +2,14 @@
 #
 # 
 #
-# Description.
+# /file GUI.py
 #
-# Copyright (c) 2012 Benjamin Geiger <begeiger@mail.usf.edu>
+# Copyright (c) 2012 
+#
+# Benjamin Geiger <begeiger@mail.usf.edu>
+# Carlos Ezequiel <cfezequiel@mail.usf.edu>
+
+"""Graphical User Interface for the A* Algorithm."""
 
 import tkinter as tk
 import tkinter.filedialog as tkfile
@@ -15,13 +20,17 @@ from FileParsers import parse_locations_file, parse_connections_file
 class GUI(object):
 
     def __init__ (self, root):
+        """Initialize all GUI widgets."""
         self.root = root
+        self.root.title("A* Algorithm")
 
         self._initialize_menus()
         self._initialize_window()
 
     
     def _initialize_menus (self):
+        """Initialize menu bar items."""
+
         self.menubar = tk.Menu(self.root)
 
         self.filemenu = tk.Menu(self.menubar, tearoff=0)
@@ -50,23 +59,64 @@ class GUI(object):
 
 
     def _initialize_window (self):
+        """Initialize window widgets."""
 
         # Set minimum size, prevent vertical stretching.
         self.root.minsize(width=1200, height=800)
         self.root.resizable(width=True, height=False)
 
+        # Top frame
+        self.topframe = tk.Frame(self.root)
+        self.topframe.pack(side=tk.TOP)
 
+        # Start city option menu
+        startlabel = tk.Label(self.topframe, text="Start city")
+        startlabel.pack(side=tk.LEFT)
+        self.startcity = tk.StringVar(self.topframe)
+        self.startcity.set("")
+        self.startoptionmenu = tk.OptionMenu(self.topframe, self.startcity, "")
+        self.startoptionmenu.pack(side=tk.LEFT)
+
+        # End city option menu
+        endlabel = tk.Label(self.topframe, text="End city")
+        endlabel.pack(side=tk.LEFT)
+        self.endcity = tk.StringVar(self.topframe)
+        self.endcity.set("")
+        self.endoptionmenu = tk.OptionMenu(self.topframe, self.endcity, "")
+        self.endoptionmenu.pack(side=tk.LEFT)
+
+        # Excluded cities entry
+        excludelabel = tk.Label(self.topframe, text="Excluded cities")
+        excludelabel.pack(side=tk.LEFT)
+        self.excludeentry = tk.Entry(self.topframe)
+        self.excludeentry.pack(side=tk.LEFT)
+
+        # Excluded cities update button
+        self.excludebutton = tk.Button(self.topframe, 
+                                       text = 'Update', 
+                                       state=tk.DISABLED,
+                                       command=self.do_update_excluded_cities)
+        self.excludebutton.pack(side=tk.LEFT)
+
+        # Clear excluded cities button
+        self.clearexcludebutton = tk.Button(self.topframe, 
+                                            text = 'Clear all', 
+                                            state=tk.DISABLED,
+                                            command=self.do_clear_all_exclusions)
+        self.clearexcludebutton.pack(side=tk.LEFT)
 
         # On the left, create a canvas.
-        self.canvas = tk.Canvas(self.root,
-                                width=800, height=800,
+        canvasframe = tk.Frame(self.root)
+        canvasframe.pack(side=tk.LEFT)
+        self.canvas = tk.Canvas(canvasframe,
+                                width=910, height=800,
                                 relief=tk.SUNKEN,
                                 borderwidth=1)
         self.canvas.pack(side=tk.LEFT,
                          fill=tk.NONE,
                          expand=False)
 
-        # Everything else goes in a frame.
+        # On the right, we have the side panel.
         sideframe = tk.Frame(self.root)
         sideframe.pack(side=tk.RIGHT,
                        fill=tk.BOTH,
@@ -77,15 +127,16 @@ class GUI(object):
         buttonframe.pack(side=tk.TOP)
         
         # Images to put in the buttons.
-        #previmage = tk.PhotoImage(file="images/left_button.gif")
-        nextimage = tk.PhotoImage(file="images/right_button.gif")
+        playimage = tk.PhotoImage(file="images/play_button.gif")
+        nextimage = tk.PhotoImage(file="images/next_button.gif")
 
-        # "Previous Step" button.
-        #prevbutton = tk.Button(buttonframe,
-        #                       image=previmage,
-        #                       command=self.do_previous)
-        #prevbutton.image = previmage
-        #prevbutton.pack(side=tk.LEFT)
+        # "Play" button.
+        self.playbutton = tk.Button(buttonframe,
+                               image=playimage,
+                               command=self.do_play,
+                               state=tk.DISABLED)
+        self.playbutton.image = playimage
+        self.playbutton.pack(side=tk.LEFT)
         
         # "Next Step" button.
         self.nextbutton = tk.Button(buttonframe,
@@ -106,17 +157,10 @@ class GUI(object):
                       fill=tk.BOTH,
                       expand=1)
 
-
-
     # Callbacks
 
-    # What do we do when they click "previous"?
-    def do_previous(self):
-        pass
-
-    # What do we do when they click "next"?
     def do_next(self):
-        # Slow way but it works.
+        """Search the next adjacent cities for the next best path."""
 
         if self.search_object is None: return
 
@@ -129,7 +173,8 @@ class GUI(object):
                 road.highlight()
 
             self.nextbutton.config(state=tk.DISABLED)
-            return
+            self.playbutton.config(state=tk.DISABLED)
+            return 0
 
         for road in current_road.destination.neighbors:
             road.probe()
@@ -144,7 +189,11 @@ class GUI(object):
             self.log_message("Total distance traveled: " + str(total_distance))
             self.log_message("Estimated distance from " + current_road.destination.name + ": " + str(estimate))
 
+        return 1
+
     def do_open_locations(self):
+        """Open the locations file and extract city locations."""
+
         newfilename = tkfile.askopenfilename()
         if not newfilename:
             return
@@ -169,7 +218,60 @@ class GUI(object):
         self.searchmenu.entryconfig(0, state=tk.DISABLED)
         self.searchmenu.entryconfig(1, state=tk.DISABLED)
 
+        # Add cities to the start and end city option menus
+        citynames = [x.name for x in self.cities]
+
+        # Remove 'dummy' menu items
+        self.startoptionmenu['menu'].delete(0, 'end')
+        self.endoptionmenu['menu'].delete(0, 'end')
+
+        # Add each city as a menu item
+        for city in citynames:
+            self.startoptionmenu['menu'].add_command(label=city, \
+                command=lambda item=city: self.do_set_start_city(item))
+
+            self.endoptionmenu['menu'].add_command(label=city, \
+                command=lambda item=city: self.do_set_end_city(item))
+
+        # Set default start and end cities
+        self.do_set_start_city(citynames[0])
+        self.do_set_end_city(citynames[0])
+
+        # Enable exclude button
+        self.excludebutton.config(state=tk.NORMAL)
+        self.clearexcludebutton.config(state=tk.NORMAL)
+
+    def do_set_start_city(self, cityname):
+        """Set a new origin city on the canvas."""
+
+        self.startcity.set(cityname)
+        try:
+            prevstartcity = [x for x in self.cities if x.state == 'starting'][0]
+            prevstartcity.set_normal()
+            prevstartcity.draw(self.canvas)
+        except IndexError:
+            pass
+        city = [x for x in self.cities if x.name == cityname][0]
+        city.set_starting()
+        city.draw(self.canvas)
+
+    def do_set_end_city(self, cityname):
+        """Set a new destination city on the canvas."""
+
+        self.endcity.set(cityname)
+        try:
+            prevendcity = [x for x in self.cities if x.state == 'ending'][0]
+            prevendcity.set_normal()
+            prevendcity.draw(self.canvas)
+        except IndexError:
+            pass
+        city = [x for x in self.cities if x.name == cityname][0]
+        city.set_ending()
+        city.draw(self.canvas)
+
     def do_open_connections(self):
+        """Open the connections file and extract roads connecting cities."""
+
         newfilename = tkfile.askopenfilename()
         if newfilename == ():
             return
@@ -200,12 +302,20 @@ class GUI(object):
         self.searchmenu.entryconfig(1, state=tk.NORMAL)
 
     def do_start_search (self, method): 
+        """Start the search algorithm based on the given method.
+
+        Supported methods:
+            'distance'  Straight-line distance
+            'linkcount' Shortest-hop-count 
+           
+        """
+
+
         self.search_object = AStarSearch()
 
-        # DEBUG. TODO: Replace with actual specification.
-        self.search_object.origin = [x for x in self.cities if x.name == "A1"][0]
-        self.search_object.destination = [x for x in self.cities if x.name == "G5"][0]
-        self.search_object.potholes = [x for x in self.cities if x.name == "B2"] # no index
+        self.search_object.origin = [x for x in self.cities if x.name == self.startcity.get()][0]
+        self.search_object.destination = [x for x in self.cities if x.name == self.endcity.get()][0]
+        self.search_object.potholes = [x for x in self.cities if x.state == "blocking"] # no index
 
         if method == "distance":
             self.search_object.heuristic = lambda x: x.distance_to(self.search_object.destination)
@@ -217,22 +327,57 @@ class GUI(object):
         for city in self.cities:
             for road in city.neighbors:
                 road.reset()
+
+        # Enable search buttons
         self.nextbutton.config(state=tk.NORMAL)
+        self.playbutton.config(state=tk.NORMAL)
 
         self.search_object.start_search()
 
+    def do_play(self):
+        """Run the entire search algorithm."""
+
+        while self.do_next():
+            continue
+
+    def do_update_excluded_cities(self):
+        """Update the states of the selected cities in the entry field to
+           "blocking".
+        """
+
+        entry = self.excludeentry.get()
+        blockedcities = "".join(entry.split()).split(',')
+        for city in self.cities:
+            if city.name in blockedcities:
+                city.set_blocking()
+            elif city.state == "blocking":
+                city.set_normal()
+            city.draw(self.canvas)
+
+    def do_clear_all_exclusions(self):
+        """Set all 'blocking' cities to 'normal'."""
+
+        for city in self.cities:
+            if city.state == "blocking":
+                city.set_normal()
+                city.draw(self.canvas)
+
     def do_quit(self):
+        """Exit program."""
+
         self.root.quit()
 
     def log_message (self, message):
+        """Prints out a message to the log window."""
+
         self.log.insert(tk.END, message)
         self.log.see(tk.END)
 
     def undraw_all (self):
+        """Removes all objects in the canvas."""
+
         for obj in self.canvas.find_all():
             self.canvas.delete(obj)
-
-
 
 if __name__ == "__main__":
     root = tk.Tk()
