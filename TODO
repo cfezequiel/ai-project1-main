@@ -1,5 +1,6 @@
-- Set up logging for search
-- Have cities and connections draw themselves
-    - Select cities for start and end, plus blocked
 - Better error handling for file problems
+- Clean up unnecessary/commented out code
+- Adjust widget sizes/positions so that they look better
+- Show distances of roads on canvas
+- 
 

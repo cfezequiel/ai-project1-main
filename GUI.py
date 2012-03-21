@@ -16,6 +16,7 @@ class GUI(object):
 
     def __init__ (self, root):
         self.root = root
+        self.root.title("A* Algorithm")
 
         self._initialize_menus()
         self._initialize_window()
@@ -52,7 +53,7 @@ class GUI(object):
     def _initialize_window (self):
 
         # Set minimum size, prevent vertical stretching.
-        self.root.minsize(width=1000, height=800)
+        self.root.minsize(width=1200, height=800)
         self.root.resizable(width=True, height=False)
 
         # Top frame
@@ -75,11 +76,31 @@ class GUI(object):
         self.endoptionmenu = tk.OptionMenu(self.topframe, self.endcity, "")
         self.endoptionmenu.pack(side=tk.LEFT)
 
+        # Excluded cities entry
+        excludelabel = tk.Label(self.topframe, text="Excluded cities")
+        excludelabel.pack(side=tk.LEFT)
+        self.excludeentry = tk.Entry(self.topframe)
+        self.excludeentry.pack(side=tk.LEFT)
+
+        # Excluded cities update button
+        self.excludebutton = tk.Button(self.topframe, 
+                                       text = 'Update', 
+                                       state=tk.DISABLED,
+                                       command=self.do_update_excluded_cities)
+        self.excludebutton.pack(side=tk.LEFT)
+
+        # Clear excluded cities button
+        self.clearexcludebutton = tk.Button(self.topframe, 
+                                            text = 'Clear all', 
+                                            state=tk.DISABLED,
+                                            command=self.do_clear_all_exclusions)
+        self.clearexcludebutton.pack(side=tk.LEFT)
+
         # On the left, create a canvas.
         canvasframe = tk.Frame(self.root)
         canvasframe.pack(side=tk.LEFT)
         self.canvas = tk.Canvas(canvasframe,
-                                width=800, height=800,
+                                width=910, height=800,
                                 relief=tk.SUNKEN,
                                 borderwidth=1)
         self.canvas.pack(side=tk.LEFT,
@@ -97,15 +118,16 @@ class GUI(object):
         buttonframe.pack(side=tk.TOP)
         
         # Images to put in the buttons.
-        #previmage = tk.PhotoImage(file="images/left_button.gif")
-        nextimage = tk.PhotoImage(file="images/right_button.gif")
+        playimage = tk.PhotoImage(file="images/play_button.gif")
+        nextimage = tk.PhotoImage(file="images/next_button.gif")
 
-        # "Previous Step" button.
-        #prevbutton = tk.Button(buttonframe,
-        #                       image=previmage,
-        #                       command=self.do_previous)
-        #prevbutton.image = previmage
-        #prevbutton.pack(side=tk.LEFT)
+        # "Play" button.
+        self.playbutton = tk.Button(buttonframe,
+                               image=playimage,
+                               command=self.do_play,
+                               state=tk.DISABLED)
+        self.playbutton.image = playimage
+        self.playbutton.pack(side=tk.LEFT)
         
         # "Next Step" button.
         self.nextbutton = tk.Button(buttonframe,
@@ -147,7 +169,7 @@ class GUI(object):
                 road.highlight()
 
             self.nextbutton.config(state=tk.DISABLED)
-            return
+            return 0
 
         for road in current_road.destination.neighbors:
             road.probe()
@@ -161,6 +183,8 @@ class GUI(object):
             self.log_message("Going from " + current_road.origin.name + " to " + current_road.destination.name)
             self.log_message("Total distance traveled: " + str(distance + total_distance))
             self.log_message("Estimated distance from " + current_road.destination.name + ": " + str(estimate))
+
+        return 1
 
     def do_open_locations(self):
         newfilename = tkfile.askopenfilename()
@@ -187,7 +211,6 @@ class GUI(object):
         self.searchmenu.entryconfig(0, state=tk.DISABLED)
         self.searchmenu.entryconfig(1, state=tk.DISABLED)
 
-
         # Add cities to the start and end city option menus
         citynames = [x.name for x in self.cities]
 
@@ -206,6 +229,10 @@ class GUI(object):
         # Set default start and end cities
         self.do_set_start_city(citynames[0])
         self.do_set_end_city(citynames[0])
+
+        # Enable exclude button
+        self.excludebutton.config(state=tk.NORMAL)
+        self.clearexcludebutton.config(state=tk.NORMAL)
 
     def do_set_start_city(self, cityname):
         """Set a new origin city on the canvas."""
@@ -282,9 +309,33 @@ class GUI(object):
         for city in self.cities:
             for road in city.neighbors:
                 road.reset()
+
+        # Enable search buttons
         self.nextbutton.config(state=tk.NORMAL)
+        self.playbutton.config(state=tk.NORMAL)
 
         self.search_object.start_search()
+
+    def do_play(self):
+        while self.do_next():
+            continue
+        self.playbutton.config(state=tk.DISABLED)
+
+    def do_update_excluded_cities(self):
+        entry = self.excludeentry.get()
+        blockedcities = "".join(entry.split()).split(',')
+        for city in self.cities:
+            if city.name in blockedcities:
+                city.set_blocking()
+            elif city.state == "blocking":
+                city.set_normal()
+            city.draw(self.canvas)
+
+    def do_clear_all_exclusions(self):
+        for city in self.cities:
+            if city.state == "blocking":
+                city.set_normal()
+                city.draw(self.canvas)
 
     def do_quit(self):
         self.root.quit()
@@ -296,8 +347,6 @@ class GUI(object):
     def undraw_all (self):
         for obj in self.canvas.find_all():
             self.canvas.delete(obj)
-
-
 
 if __name__ == "__main__":
     root = tk.Tk()
