@@ -159,23 +159,30 @@ class GUI(object):
                       fill=tk.BOTH,
                       expand=1)
 
+
+    def disable_search_GUI (self):
+        self.nextbutton.config(state=tk.DISABLED)
+        self.playbutton.config(state=tk.DISABLED)
+
     # Callbacks
 
     def do_next(self):
         """Search the next adjacent cities for the next best path."""
 
-        if self.search_object is None: return
+        if self.search_object is None:
+            self.disable_search_GUI()
+            return
 
         current_road, total_distance, distance, estimate = self.search_object.next_step()
 
         if current_road is None:
             # Hooray, we found it.
+            
+            self.disable_search_GUI()
 
             for road in self.search_object.generate_path_from(self.current_city):
                 road.highlight()
 
-            self.nextbutton.config(state=tk.DISABLED)
-            self.playbutton.config(state=tk.DISABLED)
             return 0
 
         for road in current_road.destination.neighbors:
