@@ -2,9 +2,14 @@
 #
 # 
 #
-# Description.
+# /file GUI.py
 #
-# Copyright (c) 2012 Benjamin Geiger <begeiger@mail.usf.edu>
+# Copyright (c) 2012 
+#
+# Benjamin Geiger <begeiger@mail.usf.edu>
+# Carlos Ezequiel <cfezequiel@mail.usf.edu>
+
+"""Graphical User Interface for the A* Algorithm."""
 
 import tkinter as tk
 import tkinter.filedialog as tkfile
@@ -15,6 +20,7 @@ from FileParsers import parse_locations_file, parse_connections_file
 class GUI(object):
 
     def __init__ (self, root):
+        """Initialize all GUI widgets."""
         self.root = root
         self.root.title("A* Algorithm")
 
@@ -23,6 +29,8 @@ class GUI(object):
 
     
     def _initialize_menus (self):
+        """Initialize menu bar items."""
+
         self.menubar = tk.Menu(self.root)
 
         self.filemenu = tk.Menu(self.menubar, tearoff=0)
@@ -51,6 +59,7 @@ class GUI(object):
 
 
     def _initialize_window (self):
+        """Initialize window widgets."""
 
         # Set minimum size, prevent vertical stretching.
         self.root.minsize(width=1200, height=800)
@@ -150,13 +159,8 @@ class GUI(object):
 
     # Callbacks
 
-    # What do we do when they click "previous"?
-    def do_previous(self):
-        pass
-
-    # What do we do when they click "next"?
     def do_next(self):
-        # Slow way but it works.
+        """Search the next adjacent cities for the next best path."""
 
         if self.search_object is None: return
 
@@ -169,6 +173,7 @@ class GUI(object):
                 road.highlight()
 
             self.nextbutton.config(state=tk.DISABLED)
+            self.playbutton.config(state=tk.DISABLED)
             return 0
 
         for road in current_road.destination.neighbors:
@@ -187,6 +192,8 @@ class GUI(object):
         return 1
 
     def do_open_locations(self):
+        """Open the locations file and extract city locations."""
+
         newfilename = tkfile.askopenfilename()
         if not newfilename:
             return
@@ -263,6 +270,8 @@ class GUI(object):
         city.draw(self.canvas)
 
     def do_open_connections(self):
+        """Open the connections file and extract roads connecting cities."""
+
         newfilename = tkfile.askopenfilename()
         if newfilename == ():
             return
@@ -293,6 +302,15 @@ class GUI(object):
         self.searchmenu.entryconfig(1, state=tk.NORMAL)
 
     def do_start_search (self, method): 
+        """Start the search algorithm based on the given method.
+
+        Supported methods:
+            'distance'  Straight-line distance
+            'linkcount' Shortest-hop-count 
+           
+        """
+
+
         self.search_object = AStarSearch()
 
         self.search_object.origin = [x for x in self.cities if x.name == self.startcity.get()][0]
@@ -317,11 +335,16 @@ class GUI(object):
         self.search_object.start_search()
 
     def do_play(self):
+        """Run the entire search algorithm."""
+
         while self.do_next():
             continue
-        self.playbutton.config(state=tk.DISABLED)
 
     def do_update_excluded_cities(self):
+        """Update the states of the selected cities in the entry field to
+           "blocking".
+        """
+
         entry = self.excludeentry.get()
         blockedcities = "".join(entry.split()).split(',')
         for city in self.cities:
@@ -332,19 +355,27 @@ class GUI(object):
             city.draw(self.canvas)
 
     def do_clear_all_exclusions(self):
+        """Set all 'blocking' cities to 'normal'."""
+
         for city in self.cities:
             if city.state == "blocking":
                 city.set_normal()
                 city.draw(self.canvas)
 
     def do_quit(self):
+        """Exit program."""
+
         self.root.quit()
 
     def log_message (self, message):
+        """Prints out a message to the log window."""
+
         self.log.insert(tk.END, message)
         self.log.see(tk.END)
 
     def undraw_all (self):
+        """Removes all objects in the canvas."""
+
         for obj in self.canvas.find_all():
             self.canvas.delete(obj)
 

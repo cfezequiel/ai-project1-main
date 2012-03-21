@@ -2,15 +2,17 @@
 #
 # 
 #
-# Description.
+# /file City.py
 #
-# Copyright (c) 2012 Benjamin Geiger <begeiger@mail.usf.edu>
+# Copyright (c) 2012 
+#
+# Benjamin Geiger <begeiger@mail.usf.edu>
+# Carlos Ezequiel <cfezequiel@mail.usf.edu>
 
 from math import sqrt
 import GraphUtil
 
 
-# City
 class City (object):
     """Represents a City node.
 

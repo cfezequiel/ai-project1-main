@@ -2,9 +2,14 @@
 #
 # 
 #
-# Description.
+# /file FileParsers.py
 #
-# Copyright (c) 2012 Benjamin Geiger <begeiger@mail.usf.edu>
+# Copyright (c) 2012 
+#
+# Benjamin Geiger <begeiger@mail.usf.edu>
+# Carlos Ezequiel <cfezequiel@mail.usf.edu>
+
+"""File parser utility library."""
 
 import City
 import Road
