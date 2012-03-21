@@ -56,7 +56,7 @@ class AStarSearch (object):
 
 
     def next_step (self):
-        if self.done: return None
+        if self.done: return (None, None, None, None)
 
         # Should we make these variables class-level? Probably.
         current_road, distance, estimate = self.get_next_road()
@@ -65,7 +65,7 @@ class AStarSearch (object):
         current_node = current_road.destination
         if current_node == self.destination:
             self.done = True
-            return current_road
+            return current_road, distance, current_road.origin.distance_to(current_road.destination), 0
 
         for neighbor_road in self.get_neighbors(current_node):
             neighbor = neighbor_road.destination
@@ -73,7 +73,12 @@ class AStarSearch (object):
 
             self.update_frontier(neighbor_road, distance)
 
-        return current_road
+        if current_road.origin is not None:
+            distance_traveled = current_road.origin.distance_to(current_road.destination)
+        else:
+            distance_traveled = None
+
+        return (current_road, distance, distance_traveled, self.heuristic(current_road.destination))
 
     def get_next_road (self):
         current_item = min(self._frontier, key=lambda x:x[1] + x[2])

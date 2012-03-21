@@ -120,7 +120,7 @@ class GUI(object):
 
         if self.search_object is None: return
 
-        current_road = self.search_object.next_step()
+        current_road, total_distance, distance, estimate = self.search_object.next_step()
 
         if current_road is None:
             # Hooray, we found it.
@@ -140,7 +140,9 @@ class GUI(object):
         if current_road.origin is None:
             self.log_message("Beginning search at " + current_road.destination.name)
         else:
-            self.log_message("Exploring highway from " + current_road.origin.name + " to " + current_road.destination.name)
+            self.log_message("Going from " + current_road.origin.name + " to " + current_road.destination.name)
+            self.log_message("Total distance traveled: " + str(distance + total_distance))
+            self.log_message("Estimated distance from " + current_road.destination.name + ": " + str(estimate))
 
     def do_open_locations(self):
         newfilename = tkfile.askopenfilename()
