@@ -20,9 +20,9 @@ Python 3 installer; Linux distributions may require installing a separate packag
 
 In Unix, run the GUI as follows:
 
-$ python3 GUI.py
+$ python3 GUI.pyw
 
-In Windows or MacOS, simply double-click the GUI.py file to start the GUI.
+In Windows or MacOS, simply double-click the GUI.pyw file to start the GUI.
 
 
 
