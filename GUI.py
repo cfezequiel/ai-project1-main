@@ -52,6 +52,9 @@ class GUI(object):
         self.searchmenu.add_command(label="Start search by link count",
                 command=lambda: self.do_start_search("linkcount"),
                 state=tk.DISABLED)
+        self.searchmenu.add_command(label="Stop search",
+                command=self.do_stop_search,
+                state=tk.DISABLED)
 
         self.menubar.add_cascade(label="Search", menu=self.searchmenu)
 
@@ -160,9 +163,25 @@ class GUI(object):
                       expand=1)
 
 
+    def enable_search_GUI (self):
+        # Enable search buttons
+        self.nextbutton.config(state=tk.NORMAL)
+        self.playbutton.config(state=tk.NORMAL)
+        for city in self.cities:
+            city.lock_state()
+        self.searchmenu.entryconfig(0, state=tk.DISABLED)
+        self.searchmenu.entryconfig(1, state=tk.DISABLED)
+        self.searchmenu.entryconfig(2, state=tk.NORMAL)
+
+
     def disable_search_GUI (self):
         self.nextbutton.config(state=tk.DISABLED)
         self.playbutton.config(state=tk.DISABLED)
+        for city in self.cities:
+            city.unlock_state()
+        self.searchmenu.entryconfig(0, state=tk.NORMAL)
+        self.searchmenu.entryconfig(1, state=tk.NORMAL)
+        self.searchmenu.entryconfig(2, state=tk.DISABLED)
 
     # Callbacks
 
@@ -347,11 +366,15 @@ class GUI(object):
             for road in city.neighbors:
                 road.reset()
 
-        # Enable search buttons
-        self.nextbutton.config(state=tk.NORMAL)
-        self.playbutton.config(state=tk.NORMAL)
+        self.enable_search_GUI()
 
         self.search_object.start_search()
+
+    def do_stop_search (self):
+        self.search_object = None
+
+        self.disable_search_GUI()
+
 
     def do_play(self):
         """Run the entire search algorithm."""

@@ -60,6 +60,8 @@ class City (object):
 
         # State (start, end or blocking)
         self.state = "normal"
+        # Lock the state while a search is in progress.
+        self.state_locked = False
 
 
 
@@ -113,12 +115,22 @@ class City (object):
     def change_state (self, event):
         """Change this City's state according to the given event."""
 
+        # If our state is locked, ignore the event.
+        if self.state_locked:
+            return
+        
         if self.state == "normal":
             self.set_blocking()
         elif self.state == "blocking":
             self.set_normal()
         else:
             print("lolwut")
+
+    def lock_state (self):
+        self.state_locked = True
+
+    def unlock_state (self):
+        self.state_locked = False
 
 
 
