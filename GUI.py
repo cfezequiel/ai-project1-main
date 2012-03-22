@@ -202,8 +202,8 @@ class GUI(object):
             self.log_message("Beginning search at " + current_road.destination.name)
         else:
             self.log_message("Going from " + current_road.origin.name + " to " + current_road.destination.name)
-            self.log_message("Total distance traveled: " + str(total_distance))
-            self.log_message("Estimated distance from " + current_road.destination.name + ": " + str(estimate))
+            self.log_message("Total distance traveled: %.2f" % total_distance)
+            self.log_message("Estimated distance from " + current_road.destination.name + ": %.2f" % estimate)
 
         return 1
 
