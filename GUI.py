@@ -323,15 +323,18 @@ class GUI(object):
         Supported methods:
             'distance'  Straight-line distance
             'linkcount' Shortest-hop-count 
-           
         """
 
+        if self.startcity.get() == self.endcity.get():
+            tkmsg.showwarning("Invalid Search State", "The start and end cities cannot be the same.")
+            return
 
         self.search_object = AStarSearch()
 
         self.search_object.origin = [x for x in self.cities if x.name == self.startcity.get()][0]
         self.search_object.destination = [x for x in self.cities if x.name == self.endcity.get()][0]
         self.search_object.potholes = [x for x in self.cities if x.state == "blocking"] # no index
+
 
         if method == "distance":
             self.search_object.heuristic = lambda x: x.distance_to(self.search_object.destination)
