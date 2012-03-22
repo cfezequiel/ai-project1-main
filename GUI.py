@@ -215,6 +215,7 @@ class GUI(object):
             for road in self.search_object.generate_path_from(self.current_city):
                 road.highlight()
 
+            self.log_message("Search stopped. Shortest route found.")
             return 0
         else:
             # Keep this information for the next iteration if needed.
@@ -418,6 +419,9 @@ class GUI(object):
         # Get the search object working.
         self.search_object.start_search()
 
+        # Print the search method in the log
+        self.log_message("Starting search using '%s' method." % method)
+
 
 
 
@@ -427,6 +431,8 @@ class GUI(object):
         self.search_object = None
 
         self.disable_search_GUI()
+
+        self.log_message("Search stopped by user.")
 
 
     def do_play(self):
