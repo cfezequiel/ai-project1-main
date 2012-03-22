@@ -244,6 +244,8 @@ class GUI(object):
 
         self.cities = parse_locations_file(locationsfile)
 
+        self.canvas.delete(tk.ALL)
+
         for city in self.cities:
             city.draw(self.canvas)
         
