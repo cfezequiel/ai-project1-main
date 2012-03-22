@@ -12,6 +12,8 @@
 from math import sqrt
 import GraphUtil
 
+MAX_RADIUS = 10
+
 
 class City (object):
     """Represents a City node.
@@ -40,7 +42,7 @@ class City (object):
     
     def __init__(self, name = None, x = 0, y = 0, neighbors = None):
         self.location = GraphUtil.Point(x, y)
-        self.radius = len(name) * 4
+        self.radius = min(len(name) * 4, MAX_RADIUS)
         self.figure = GraphUtil.Circle(self.location, self.radius)
         self.figure.setFill("white")
         self.label = GraphUtil.Text(self.location, name)

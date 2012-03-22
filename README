@@ -42,7 +42,7 @@ Example program run:
 4. Select the origin city from the "Start city" dropdown menu
 5. Select the destination city from the "End city" dropdown menu
 6. Click on one of the cities to mark it as 'blocked' (color changes to black)
-6. From "Search" menu select a search heuristic. This will begin the search
+6. From "Search" menu select "Start search by distance"
 7. Click the next step button (arrow) to run the search
 8. Continue clicking the next step button until the search ends
    (i.e. either the end city is found or no route from start city to end city could be found)
@@ -57,5 +57,9 @@ Clicking a city will toggle it from 'blocked' to 'unblocked' and vice versa.
 Start and end cities should be set using the corresponding option menus.
 Start and end cities cannot be set to 'blocked'.
 Start and end cities should not be the same.
+
+The stop search button will end the current search, and allow the user to
+select new blocked cities. The user then has to restart the search from the
+beginning.
 
 
