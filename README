@@ -15,20 +15,15 @@ Carlos Ezequiel
 Running the program
 --------------------
 
-1. From the console 
+This application requires Python 3 and the Tkinter toolkit (which is installed with the
+Python 3 installer; Linux distributions may require installing a separate package).
 
-To execute the console program, run at the command line:
-
-$ python main.py <locations.txt> <connections.txt> <start> <end> [<blocked> [<blocked> ...]]
-
-If there is no valid route from the start to the end without going
-through a blocked city, the program will throw an exception.
-
-2. Running the GUI
-
-Execute the following command:
+In Unix, run the GUI as follows:
 
 $ python3 GUI.py
+
+In Windows or MacOS, simply double-click the GUI.py file to start the GUI.
+
 
 
 Using the GUI
