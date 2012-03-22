@@ -1,15 +1,65 @@
+===========================
 AI Project 1 - Main
-===================
 
-by Carlos Ezequiel and Benjamin Geiger
+2012-03-21
+
+Benjamin Geiger 
+<begeiger@mail.usf.edu>
+
+Carlos Ezequiel 
+<cfezequiel@mail.usf.edu>
+
+===========================
 
 
-To Execute:
------------
+Running the program
+--------------------
 
-To execute the program, run at the command line:
+1. From the console 
 
-python main.py <locations.txt> <connections.txt> <start> <end> [<blocked> [<blocked> ...]]
+To execute the console program, run at the command line:
+
+$ python main.py <locations.txt> <connections.txt> <start> <end> [<blocked> [<blocked> ...]]
 
 If there is no valid route from the start to the end without going
 through a blocked city, the program will throw an exception.
+
+2. Running the GUI
+
+Execute the following command:
+
+$ python3 GUI.py
+
+
+Using the GUI
+-------------
+
+Example program run:
+
+1. Load the program GUI
+2. From "File->Open locations file..." select the locations file to use
+3. From "File->Open connections file..." select the connections file to use
+4. Select the origin city from the "Start city" dropdown menu
+5. Select the destination city from the "End city" dropdown menu
+6. Click on one of the cities to mark it as 'blocked' (color changes to black)
+6. From "Search" menu select "Start search by distance"
+7. Click the next step button (arrow) to run the search
+8. Continue clicking the next step button until the search ends
+   (i.e. either the end city is found or no route from start city to end city could be found)
+
+Notes
+-----
+The play button (triangle) will run the search until the end city is found or no route from
+the start city to the end city can be found.
+
+Clicking a city will toggle it from 'blocked' to 'unblocked' and vice versa.
+
+Start and end cities should be set using the corresponding option menus.
+Start and end cities cannot be set to 'blocked'.
+Start and end cities should not be the same.
+
+The stop search button will end the current search, and allow the user to
+select new blocked cities. The user then has to restart the search from the
+beginning.
+
+

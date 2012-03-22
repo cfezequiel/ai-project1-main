@@ -1,0 +1,8 @@
+- Better error handling for file problems
+- Clean up unnecessary out code
+- Adjust widget sizes/positions so that they look better
+- Show distances of roads on canvas
+- Optimize code?
+- Remove this TODO before submission
+
+

@@ -2,12 +2,21 @@
 #
 # 
 #
-# Description.
+# /file FileParsers.py
 #
-# Copyright (c) 2012 Benjamin Geiger <begeiger@mail.usf.edu>
+# Copyright (c) 2012 
+#
+# Benjamin Geiger <begeiger@mail.usf.edu>
+# Carlos Ezequiel <cfezequiel@mail.usf.edu>
+
+"""File parser utility library."""
 
 import City
+import Road
 from math import sqrt
+
+
+
 
 # Input: an open file containing city data.
 # Output: a list of City objects, one for each valid city record.
@@ -54,6 +63,9 @@ def parse_locations_file(locationsfile):
     return locations
 
         
+
+
+
 def parse_connections_file(connectionsfile, locations):
     """Read in a connections file and update the cities to include those connections."""
 
@@ -88,9 +100,12 @@ def parse_connections_file(connectionsfile, locations):
                 continue
 
             # Add the connection between the cities.
-            currentlocation.neighbors.append(neighbor)
+            currentlocation.neighbors.append(Road.Road(currentlocation, neighbor))
 
     return locations
+
+
+
 
 
 # Test script.
