@@ -56,6 +56,9 @@ class Road (object):
         
         self.reset()
 
+
+
+
     def draw (self, canvas):
         """Draws this object on the specified canvas."""
 
@@ -72,6 +75,9 @@ class Road (object):
 
         self.line.draw()
 
+    
+    
+    
     def reset (self):
         """Resets the road state.
 
@@ -84,6 +90,9 @@ class Road (object):
             self.line.setOutline("gray")
             self.line.setWidth(1)
 
+    
+    
+    
     def probe (self):
         """If the road state is 'unprobed', this sets the state to 'probed'."""
 
@@ -94,6 +103,9 @@ class Road (object):
                 self.line.canvas.lift(self.line.id)
             self.status = "probed"
 
+    
+    
+    
     def travel (self):
         """If the road state is 'probed', this sets the state to 'traveled'."""
         if self.status == "probed":
@@ -103,6 +115,9 @@ class Road (object):
                 self.line.canvas.lift(self.line.id)
             self.status = "traveled"
 
+    
+    
+    
     def highlight (self):
         """Highlights the road."""
 
@@ -110,8 +125,5 @@ class Road (object):
             self.line.setOutline("red")
             self.line.setWidth(4)
             self.line.canvas.lift(self.line.id)
-
-if __name__ == "__main__":
-	print("Insert unit test here.")
 
 # vim: set et sw=4 ts=4: 

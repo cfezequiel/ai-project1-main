@@ -15,6 +15,9 @@ import City
 import Road
 from math import sqrt
 
+
+
+
 # Input: an open file containing city data.
 # Output: a list of City objects, one for each valid city record.
 
@@ -60,6 +63,9 @@ def parse_locations_file(locationsfile):
     return locations
 
         
+
+
+
 def parse_connections_file(connectionsfile, locations):
     """Read in a connections file and update the cities to include those connections."""
 
@@ -97,6 +103,9 @@ def parse_connections_file(connectionsfile, locations):
             currentlocation.neighbors.append(Road.Road(currentlocation, neighbor))
 
     return locations
+
+
+
 
 
 # Test script.
