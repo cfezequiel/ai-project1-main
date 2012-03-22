@@ -19,6 +19,8 @@ from FileParsers import parse_locations_file, parse_connections_file
 
 class GUI(object):
 
+
+    
     def __init__ (self, root):
         """Initialize all GUI widgets."""
         self.root = root
@@ -28,8 +30,13 @@ class GUI(object):
         self._initialize_window()
 
     
+
+
     def _initialize_menus (self):
         """Initialize menu bar items."""
+
+
+        # Yes, this code is fugly.
 
         self.menubar = tk.Menu(self.root)
 
@@ -61,33 +68,14 @@ class GUI(object):
         self.root.config(menu=self.menubar)
 
 
+
+
     def _initialize_window (self):
         """Initialize window widgets."""
 
         # Set minimum size, prevent vertical stretching.
         self.root.minsize(width=1200, height=800)
         self.root.resizable(width=True, height=False)
-
-
-        # Excluded cities entry
-        #excludelabel = tk.Label(self.topframe, text="Excluded cities")
-        #excludelabel.pack(side=tk.LEFT)
-        #self.excludeentry = tk.Entry(self.topframe)
-        #self.excludeentry.pack(side=tk.LEFT)
-
-        # Excluded cities update button
-        #self.excludebutton = tk.Button(self.topframe, 
-        #                               text = 'Update', 
-        #                               state=tk.DISABLED,
-        #                               command=self.do_update_excluded_cities)
-        #self.excludebutton.pack(side=tk.LEFT)
-
-        # Clear excluded cities button
-        #self.clearexcludebutton = tk.Button(self.topframe, 
-        #                                    text = 'Clear all', 
-        #                                    state=tk.DISABLED,
-        #                                    command=self.do_clear_all_exclusions)
-        #self.clearexcludebutton.pack(side=tk.LEFT)
 
         # On the left, create a canvas.
         canvasframe = tk.Frame(self.root)
@@ -110,10 +98,6 @@ class GUI(object):
         buttonframe = tk.Frame(sideframe)
         buttonframe.pack(side=tk.TOP, fill=tk.X)
         buttonframe.grid_columnconfigure(2, weight=1)
-
-        # Top frame
-        #self.topframe = tk.Frame(buttonframe)
-        #self.topframe.pack(side=tk.LEFT)
 
         # Start city option menu
         startlabel = tk.Label(buttonframe, text="Start city")
@@ -163,37 +147,56 @@ class GUI(object):
                       expand=1)
 
 
+
+
     def enable_search_GUI (self):
+        """Enable the widgets having to do with search."""
+
         # Enable search buttons
         self.nextbutton.config(state=tk.NORMAL)
         self.playbutton.config(state=tk.NORMAL)
         for city in self.cities:
             city.lock_state()
+        
+        # Enable/disable search menu items
         self.searchmenu.entryconfig(0, state=tk.DISABLED)
         self.searchmenu.entryconfig(1, state=tk.DISABLED)
         self.searchmenu.entryconfig(2, state=tk.NORMAL)
 
-
     def disable_search_GUI (self):
+        """Disable the widgets having to do with search."""
+
+        # Disable search buttons
         self.nextbutton.config(state=tk.DISABLED)
         self.playbutton.config(state=tk.DISABLED)
         for city in self.cities:
             city.unlock_state()
+
+        # Enable/disable search menu items
         self.searchmenu.entryconfig(0, state=tk.NORMAL)
         self.searchmenu.entryconfig(1, state=tk.NORMAL)
         self.searchmenu.entryconfig(2, state=tk.DISABLED)
+
+
+
+
 
     # Callbacks
 
     def do_next(self):
         """Search the next adjacent cities for the next best path."""
-
+        
+        # If somehow we got here without a valid search object,
+        # disable the button and stop.
         if self.search_object is None:
             self.disable_search_GUI()
             return
 
+        # Run one iteration of the algorithm, and get information back.
         try:        
             current_road, total_distance, distance, estimate = self.search_object.next_step()
+        
+        # The code throws a RuntimeError if no route exists.
         except RuntimeError as ex:
             self.disable_search_GUI()
             tkmsg.showerror(
@@ -201,56 +204,77 @@ class GUI(object):
                     "No valid route exists between the selected cities.")
             return
 
+        # If the current road is None, we've reached the end.
         if current_road is None:
             # Hooray, we found it.
             
+            # Now that the search is over, disable the search buttons.
             self.disable_search_GUI()
 
+            # Highlight the roads we've traveled.
             for road in self.search_object.generate_path_from(self.current_city):
                 road.highlight()
 
             return 0
+        else:
+            # Keep this information for the next iteration if needed.
+            self.current_city = current_road.destination
 
+        # Otherwise, show all neighboring roads as probed.
         for road in current_road.destination.neighbors:
             road.probe()
+        # Mark the current road as being traveled.
         current_road.travel()
 
-        self.current_city = current_road.destination
-
+        # Dump some information to the log.
         if current_road.origin is None:
             self.log_message("Beginning search at " + current_road.destination.name)
         else:
             self.log_message("Going from " + current_road.origin.name + " to " + current_road.destination.name)
             self.log_message("Total distance traveled: %.2f" % total_distance)
             self.log_message("Estimated distance from " + current_road.destination.name + ": %.2f" % estimate)
-
         return 1
+
+
+
+
 
     def do_open_locations(self):
         """Open the locations file and extract city locations."""
 
+        # Get the filename.
         newfilename = tkfile.askopenfilename()
+        # If they press "cancel", skip the rest.
         if not newfilename:
             return
+
+        # Set the filenames; setting location should clear connections.
         self.location_file_name = newfilename
         self.connection_file_name = None
 
+        # Try to open the file.
         try:
             locationsfile = open(self.location_file_name)
+        # Complain if the file can't be opened.
         except IOError:
             print(repr(self.location_file_name))
             tkmsg.showerror("Error", "Error loading locations file.")
             return
 
+        # Read the cities from the file.
         self.cities = parse_locations_file(locationsfile)
 
+        # Clear the old cities from the canvas.
         self.canvas.delete(tk.ALL)
 
+        # Draw all of the cities.
         for city in self.cities:
             city.draw(self.canvas)
         
+        # Show some log information.
         self.log_message("Loaded " + str(len(self.cities)) + " cities.")
 
+        # Set states of menu items.
         self.filemenu.entryconfig(1, state=tk.NORMAL)
         self.searchmenu.entryconfig(0, state=tk.DISABLED)
         self.searchmenu.entryconfig(1, state=tk.DISABLED)
@@ -279,6 +303,7 @@ class GUI(object):
         #self.excludebutton.config(state=tk.NORMAL)
         #self.clearexcludebutton.config(state=tk.NORMAL)
 
+
     def do_set_start_city (self, city):
         self.startcity.set(city)
         self.do_set_endpoint_cities()
@@ -304,37 +329,52 @@ class GUI(object):
         endcity.draw(self.canvas)
 
 
+
+
+
     def do_open_connections(self):
         """Open the connections file and extract roads connecting cities."""
 
+        # Get the filename.
         newfilename = tkfile.askopenfilename()
-        if newfilename == ():
+        # If they cancel, cancel.
+        if not newfilename:
             return
         self.connection_file_name = newfilename
 
+        # Try to open the file.
         try:
             connectionsfile = open(self.connection_file_name)
+        # And complain if we can't.
         except IOError:
-            tkmsg.showwarning("Error", "Error loading connections file.")
+            tkmsg.showerror("Error", "Error loading connections file.")
             return
 
+        # Get rid of any previous connections.
         for city in self.cities:
             city.neighbors = []
 
+        # Load new connections from the file.
         self.cities = parse_connections_file(connectionsfile, self.cities)
 
+        # Count the number of connections we just loaded and log it.
         roadcount = 0
         for city in self.cities:
             roadcount += len(city.neighbors)
+        self.log_message("Loaded " + str(roadcount) + " roads.")
 
+        # Draw the new connections onto the canvas.
         for city in self.cities:
             for road in city.neighbors:
                 road.draw(self.canvas)
 
-        self.log_message("Loaded " + str(roadcount) + " roads.")
-
+        # Let the user start a search.
         self.searchmenu.entryconfig(0, state=tk.NORMAL)
         self.searchmenu.entryconfig(1, state=tk.NORMAL)
+
+
+
+
 
     def do_start_search (self, method): 
         """Start the search algorithm based on the given method.
@@ -344,33 +384,46 @@ class GUI(object):
             'linkcount' Shortest-hop-count 
         """
 
+        # Check for a zero-length trip.
         if self.startcity.get() == self.endcity.get():
             tkmsg.showwarning("Invalid Search State", "The start and end cities cannot be the same.")
             return
 
+        # Create a search object...
         self.search_object = AStarSearch()
 
+        # ... and fill its attributes.
         self.search_object.origin = [x for x in self.cities if x.name == self.startcity.get()][0]
         self.search_object.destination = [x for x in self.cities if x.name == self.endcity.get()][0]
         self.search_object.potholes = [x for x in self.cities if x.state == "blocking"] # no index
 
 
+        # Here is where we choose a heuristic and distance function.
         if method == "distance":
             self.search_object.heuristic = lambda x: x.distance_to(self.search_object.destination)
             self.search_object.distance_func = lambda x, y: x.distance_to(y)
         elif method == "linkcount":
             self.search_object.heuristic = lambda x: 1
+            # Distance function: One per hop (skipping the first "road" which isn't really there).
             self.search_object.distance_func = lambda x, y: (x is not None and y is not None) and 1 or 0
 
+        # Redraw all the roads as un-probed.
         for city in self.cities:
             for road in city.neighbors:
                 road.reset()
 
+        # Enable the buttons for searching.
         self.enable_search_GUI()
 
+        # Get the search object working.
         self.search_object.start_search()
 
+
+
+
     def do_stop_search (self):
+        """Stop the search algorithm, returning control to the user."""
+
         self.search_object = None
 
         self.disable_search_GUI()
@@ -382,32 +435,15 @@ class GUI(object):
         while self.do_next():
             continue
 
-    def do_update_excluded_cities(self):
-        """Update the states of the selected cities in the entry field to
-           "blocking".
-        """
 
-        entry = self.excludeentry.get()
-        blockedcities = "".join(entry.split()).split(',')
-        for city in self.cities:
-            if city.name in blockedcities:
-                city.set_blocking()
-            elif city.state == "blocking":
-                city.set_normal()
-            city.draw(self.canvas)
-
-    def do_clear_all_exclusions(self):
-        """Set all 'blocking' cities to 'normal'."""
-
-        for city in self.cities:
-            if city.state == "blocking":
-                city.set_normal()
-                city.draw(self.canvas)
 
     def do_quit(self):
         """Exit program."""
 
         self.root.quit()
+
+
+
 
     def log_message (self, message):
         """Prints out a message to the log window."""
@@ -415,16 +451,16 @@ class GUI(object):
         self.log.insert(tk.END, message)
         self.log.see(tk.END)
 
-    def undraw_all (self):
-        """Removes all objects in the canvas."""
 
-        for obj in self.canvas.find_all():
-            self.canvas.delete(obj)
-
+# Run this part only if this file is run from the command line.
 if __name__ == "__main__":
+    # Create a Tk instance.
     root = tk.Tk()
+
+    # Start our GUI.
     gui = GUI(root)
     
+    # And start the event loop.
     root.mainloop()
 
 
