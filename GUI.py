@@ -235,7 +235,7 @@ class GUI(object):
         self.searchmenu.entryconfig(1, state=tk.DISABLED)
 
         # Add cities to the start and end city option menus
-        citynames = [x.name for x in self.cities]
+        citynames = sorted([x.name for x in self.cities])
 
         # Remove 'dummy' menu items
         self.startoptionmenu['menu'].delete(0, 'end')
