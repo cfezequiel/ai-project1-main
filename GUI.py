@@ -263,46 +263,44 @@ class GUI(object):
         # Add each city as a menu item
         for city in citynames:
             self.startoptionmenu['menu'].add_command(label=city, \
-                command=lambda item=city: self.do_set_start_city(item))
+                    command=lambda item=city: self.do_set_start_city(item))
 
             self.endoptionmenu['menu'].add_command(label=city, \
-                command=lambda item=city: self.do_set_end_city(item))
+                    command=lambda item=city: self.do_set_end_city(item))
 
         # Set default start and end cities
-        self.do_set_start_city(citynames[0])
-        self.do_set_end_city(citynames[0])
+        self.startcity.set(citynames[0])
+        self.endcity.set(citynames[-1])
+        self.do_set_endpoint_cities()
 
         # Enable exclude button
         #self.excludebutton.config(state=tk.NORMAL)
         #self.clearexcludebutton.config(state=tk.NORMAL)
 
-    def do_set_start_city(self, cityname):
-        """Set a new origin city on the canvas."""
+    def do_set_start_city (self, city):
+        self.startcity.set(city)
+        self.do_set_endpoint_cities()
 
-        self.startcity.set(cityname)
-        try:
-            prevstartcity = [x for x in self.cities if x.state == 'starting'][0]
-            prevstartcity.set_normal()
-            prevstartcity.draw(self.canvas)
-        except IndexError:
-            pass
-        city = [x for x in self.cities if x.name == cityname][0]
-        city.set_starting()
-        city.draw(self.canvas)
+    def do_set_end_city (self, city):
+        self.endcity.set(city)
+        self.do_set_endpoint_cities()
 
-    def do_set_end_city(self, cityname):
-        """Set a new destination city on the canvas."""
+    def do_set_endpoint_cities(self):
+        """Update origin and destination cities on the canvas."""
 
-        self.endcity.set(cityname)
-        try:
-            prevendcity = [x for x in self.cities if x.state == 'ending'][0]
-            prevendcity.set_normal()
-            prevendcity.draw(self.canvas)
-        except IndexError:
-            pass
-        city = [x for x in self.cities if x.name == cityname][0]
-        city.set_ending()
-        city.draw(self.canvas)
+        prevcities = [x for x in self.cities if x.state in ['starting', 'ending']]
+        for city in prevcities:
+            city.set_normal()
+            city.draw(self.canvas)
+       
+        startcity = [x for x in self.cities if x.name == self.startcity.get()][0]
+        startcity.set_starting()
+        startcity.draw(self.canvas)
+
+        endcity = [x for x in self.cities if x.name == self.endcity.get()][0]
+        endcity.set_ending()
+        endcity.draw(self.canvas)
+
 
     def do_open_connections(self):
         """Open the connections file and extract roads connecting cities."""
