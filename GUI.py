@@ -180,6 +180,7 @@ class GUI(object):
             tkmsg.showerror(
                     "Invalid Search State", 
                     "No valid route exists between the selected cities.")
+            return
 
         if current_road is None:
             # Hooray, we found it.
